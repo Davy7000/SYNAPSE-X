@@ -1,0 +1,139 @@
+{
+  "name": "Zokou-2.0",
+  "description": "bot whatsapp développé par djalega++",
+  "keywords": ["bot", "node", "baileys", "whatsapp"],
+  "logo": "https://raw.githubusercontent.com/djalega8000/Zokou-2.0/main/Zokou.jpg",
+  "repository": "https://github.com/djalega8000/Zokou-2.0",
+  "succes_url": "/",
+  "stack": "container",
+  "env": {
+    "PREFIX": {
+      "description": "choisissez votre préfixe",
+      "value": "#",
+      "required": true
+    },
+    "AUTO_READ_STATUS": {
+      "description": "le bot lira tous les status automatiquement (oui pour activer et non pour désactiver)",
+      "value": "oui",
+      "required": false
+    },
+    "AUTO_DOWNLOAD_STATUS": {
+      "description": "le bot téléchargera tous les status automatiquement (oui pour activer et non pour désactiver)",
+      "value": "oui",
+      "required": false
+    },
+    "BOT_NAME": {
+      "description": "Un nom pour votre bot",
+      "value": "Zokou-MD",
+      "required": false
+    },
+    "MENU_THEME": {
+      "description": "Ajoutez un ou plusieurs lien(s) d'image ou de video pour votre bot ; exemple : lien1,lien2,lien3......\n Ou mettre le nom d'un THEME parmis les themes disponibles",
+      "value": "ELIE",
+      "required": false
+    },
+    "PM_PERMIT": {
+      "description": "Les commandes seront pas fonctionnelles en priver pour les autres utilisateurs (oui pour activer et non pour désactiver)",
+      "value": "non",
+      "required": false
+    },
+    "MODE_PUBLIC": {
+      "description": "oui pour le mode public ou non pour le mode privé(Dans ce cas, vous seul  utiliserez le bot)",
+      "value": "oui",
+      "required": false
+    },
+    "HEROKU_API_KEY": {
+      "description": "inserez l'apikey de votre compte heroku",
+      "required": false
+    },
+    "HEROKU_APP_NAME": {
+      "description": "inserez le nom que vous avez inserez(APP NAME) au tout debut de la page",
+      "required": false
+    },
+    "PRESENCE": {
+      "description": "marquez votre présence : 1 pour signaler que vous êtes en ligne même si vous ne l'êtes pas . 2 pour dire que vous êtes entrain d écrire un message. 3 pour signaler que vous êtes entrain de d enregistrer un audio . ou laissez le champs  vide pour signaler votre état réel.  ",
+      "value": "1",
+      "required": false
+    },
+    "SESSION_ID": {
+      "description": "veuillez renseigner votre id de session",
+      "value": "",
+      "required": true
+    },
+    "OWNER_NAME": {
+      "description": "Votre nom",
+      "required": false,
+      "value": "Djalega++"
+    },
+    "OWNER_NUMBER": {
+      "description": "Votre numero de telephone; il doit etre dans le format ID+numero",
+      "required": false,
+      "value": "22891733300"
+    },
+    "WARN_COUNT": {
+      "description": "il s'agit de nombre d'avertissement limite",
+      "required": false,
+      "value": "3"
+    },
+    "STARTING_BOT_MESSAGE": {
+      "description": "Mettez oui si vous voulez avoir le message du bot qu'il vous envoie en pv ou non si vous en voulez pas",
+      "required": true,
+      "value": "oui"
+    },
+    "PM_CHATBOT": {
+      "description": "Mettez oui si vous voulez que les message que le bot reponde automatiquement aux messages en pv",
+      "required": false,
+      "value": "non"
+    },
+    "ANTI_COMMAND_SPAM": {
+      "description": "Ajoutez un temps de refroidissement d'une minute apres chaque commande pour les autres utilisateur(pour activer choississez *oui*)",
+      "required": false,
+      "value": "non"
+    },
+    "ANTI_DELETE_MESSAGE": {
+      "description": "Mettez oui si vous voulez que les messages supprimer par les autres utilisateurs vous sois envoyez en pv",
+      "required": false,
+      "value": "non"
+    },
+    "AUTO_REACT_MESSAGE": {
+      "description": "Mettez oui si vous voulez que les messages soient réagis automatiquement",
+      "required": false,
+      "value": "non"
+    },
+    "AUTO_REACT_STATUS": {
+      "description": "Active les réactions automatiques sur les statuts (oui/non)",
+      "required": false,
+      "value": "non"
+    },
+    "TIME_ZONE": {
+      "description": "Fuseau horaire du bot",
+      "required": false,
+      "value": "Africa/Sao_Tome"
+    },
+    "SERVER": {
+      "description": "Nom du serveur",
+      "required": false,
+      "value": "HEROKU"
+    },
+    "STICKER_PACKNAME": {
+      "description": "Nom du pack de stickers",
+      "required": false,
+      "value": "made with ❤; Zokou-MD"
+    },
+    "DATABASE_URL": {
+      "description": "url d'un PostgreSQL , ceci n'est pas obligatoire juste si vous avez envie de toujours préserver les données enregistrer du bot",
+      "required": false
+    },
+    "LOG_MSG": {
+      "description": "Affiche les messages whatsapp dans la console: oui/non",
+      "required": false,
+      "value": "non"
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
+}
