@@ -27,6 +27,7 @@ A lightweight WhatsApp bot framework with multi-session support and extensive co
   <a href="https://ossynapse.netlify.app/">
     <img src="https://i.ibb.co/fVsfPsjk/deploy-bot.png" alt="Get Session" width="200"/>
   </a>
+   <video src="plugins/utils/images/video.mp4" height="60" width="60" preload="preload" autoplay="autoplay" alt="video non trouver"></video>
 </p>
 
 ## Features
