@@ -5,8 +5,10 @@
   </div>
 <p align="center">
   <a href="https://files.catbox.moe/agf9uv.jpg"><img src="https://files.catbox.moe/agf9uv.jpg" alt="menu" border="0"></a>
-    <video src="plugins/utils/images/video.mp4" height="600" width="600" preload="preload" autoplay="autoplay" alt="video non trouver"></video>
 </p>
+#video cool
+https://github.com/user-attachments/assets/ef436569-8743-4ed3-9110-c8773701f9ee
+#video cool
 
 A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Synapse project for better stability and performance.
 
