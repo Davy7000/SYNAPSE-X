@@ -7,7 +7,7 @@
   <a href="https://files.catbox.moe/agf9uv.jpg"><img src="https://files.catbox.moe/agf9uv.jpg" alt="menu" border="0"></a>
 </p>
 #video cool
-https://github.com/user-attachments/assets/ef436569-8743-4ed3-9110-c8773701f9ee
+https://github.com/Davy7000/SYNAPSE-X/raw/main/plugins/utils/images/video.mp4
 #video cool
 
 A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Synapse project for better stability and performance.
