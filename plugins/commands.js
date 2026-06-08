@@ -341,9 +341,8 @@ Module(
     const botOwner = "𝑻𝒘𝒊𝒍𝒊𝒈𝒉𝒕_𝑲𝒊𝒏𝒈☯❥";
     const botVersion = VERSION;
 
-    // Modification ici : On utilise directement ton lien URL
-    const botImageLink = "https://i.ibb.co/kVKwLm6w/temp.jpg";
-
+    const videoPath = path.join(__dirname, "utils/images/video.mp4");
+      
     const menu = `╭═〘${botName}〙═⊷❍
 ┃${star}╭──────────────
 ┃${star}│prefix : ${handlerPrefix}
@@ -361,10 +360,10 @@ ${cmdmenu}
 > «un projet de ${oss}»`;
 
     try {
-      // Envoi direct via URL pour garantir l'affichage de ton image externe
       await message.client.sendMessage(message.jid, {
-        image: { url: botImageLink },
+        video: { url: videoPath },
         caption: menu,
+        gifPlayback: true
       });
     } catch (error) {
       console.error("Error sending menu:", error);
@@ -453,7 +452,7 @@ Module(
   async (message, match) => {
     const name = match[1]?.trim();
     if (!name)
-      return await message.sendReply("_Provide a name: .setname Raganork_");
+      return await message.sendReply("_Provide a name: .setname SYNAPSE-X_");
     const parts = config.BOT_INFO.split(";");
     parts[0] = name;
     await setVar("BOT_INFO", parts.join(";"));
