@@ -5,6 +5,7 @@
   </div>
 <p align="center">
   <a href="https://files.catbox.moe/agf9uv.jpg"><img src="https://files.catbox.moe/agf9uv.jpg" alt="menu" border="0"></a>
+    <video src="plugins/utils/images/video.mp4" height="600" width="600" preload="preload" autoplay="autoplay" alt="video non trouver"></video>
 </p>
 
 A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Synapse project for better stability and performance.
@@ -27,8 +28,6 @@ A lightweight WhatsApp bot framework with multi-session support and extensive co
   <a href="https://ossynapse.netlify.app/">
     <img src="https://i.ibb.co/fVsfPsjk/deploy-bot.png" alt="Get Session" width="200"/>
   </a>
-  #video
-   <video src="plugins/utils/images/video.mp4" height="60" width="60" preload="preload" autoplay="autoplay" alt="video non trouver"></video>
 </p>
 
 ## Features
