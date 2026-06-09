@@ -4,8 +4,7 @@
 </h1>
   </div>
 <p align="center">
-  ![demo du projet](plugins/utils/images/demo.gif)
-  <a href="https://files.catbox.moe/agf9uv.jpg"><img src="https://files.catbox.moe/agf9uv.jpg" alt="menu" border="0"></a>
+  <a href="https://files.catbox.moe/yy99ny.jpg"><img src="https://files.catbox.moe/yy99ny.jpg" alt="menu" border="0"></a>
 </p>
 
 A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Synapse project for better stability and performance.
