@@ -1,6 +1,6 @@
 #
 <div align="center">
-<h1 style="font-family:'Orbitron', monospace; color:'aqua'; animation:scroll 8s linear infinite; white-space:nowrap;">SYNAPSE-X
+<h1 style='coloe:red;'>SYNAPSE-X
 </h1>
   </div>
 <p align="center">
@@ -115,10 +115,11 @@ pm2 restart SYNAPSE-X
 
 Default prefix: `!`
 
-* `.list` – Show available commands
-* `.ping` – Check response time
-* `.restart` – Restart bot (sudo only)
-* `.shutdown` – Stop bot (sudo only)
+* `!list` – Show available commands
+* `!ping` – Check response time
+* `!restart` – Restart bot (sudo only)
+* `!shutdown` – Stop bot (sudo only)
+* `!owner` - To send me a message
 
 ## File Structure
 
@@ -136,9 +137,9 @@ SYNAPSE-X/
 
 ## License
 
-GPL License - See LICENSE file for details.
+* GPL License - See LICENSE file for details.
 
 ---
 
-**Note:**Enjoy your life witch us
+* Note: Enjoy your life witch us
 
