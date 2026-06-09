@@ -69,7 +69,7 @@ Module(
           q,
           spl[0],
           spl[1] ? spl[1] : config.AUDIO_DATA.split(";")[1],
-          "Raganork Engine",
+          "Synapse Engine",
           image
         );
       await m.client.sendMessage(
