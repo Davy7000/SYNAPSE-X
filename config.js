@@ -211,7 +211,7 @@ const baseConfig = {
   ANTI_SPAM: process.env.ANTI_SPAM || "919074309534-1632403322@g.us",
   MULTI_HANDLERS: convertToBool(process.env.MULTI_HANDLERS) || false,
   DISABLE_START_MESSAGE:
-    convertToBool(process.env.DISABLE_START_MESSAGE) || false,
+    convertToBool(process.env.DISABLE_START_MESSAGE) || true,
   NOLOG: process.env.NOLOG || false,
   DISABLED_COMMANDS:
     (process.env.DISABLED_COMMANDS
@@ -244,13 +244,13 @@ const baseConfig = {
   CHATBOT: process.env.CHATBOT || "off",
   HANDLERS: process.env.HANDLERS || "!",
   STICKER_DATA: process.env.STICKER_DATA || "Ｓｙｎａｐｓｅ ｘ",
-  BOT_NAME: process.env.BOT_NAME || "Ｓｙｎａｐｓｅ ｘ",
+  BOT_NAME: process.env.BOT_NAME || "ＳYNAPSE-X",
   AUDIO_DATA:
     process.env.AUDIO_DATA === undefined || process.env.AUDIO_DATA === "private"
       ? "default"
       : process.env.AUDIO_DATA,
   TAKE_KEY: process.env.TAKE_KEY || "",
-  CMD_REACTION: convertToBool(process.env.CMD_REACTION) || false,
+  CMD_REACTION: convertToBool(process.env.CMD_REACTION) || true,
   MODE: process.env.MODE || "private",
   WARN: process.env.WARN || "4",
   ANTILINK_WARN: process.env.ANTILINK_WARN || "",
