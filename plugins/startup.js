@@ -31,8 +31,21 @@ Module({
         const totalCommands = commands.length; 
         const currentHandler = config.HANDLERS === 'false' ? 'Aucun (Texte brut)' : config.HANDLERS;
         const botName = sock.user?.name || "Chers client";
-        const botLang = (config.LANG || 'french').toUpperCase();
-        const langFlag = botLang === 'FRENCH' ? '🇫🇷' : botLang === 'ENGLISH' ? '🇬🇧' : '🌐';
+      
+        // 1. On récupère la valeur exacte de ton config.js (ex: "english" ou "french")
+const rawLang = (config.LANGUAGE || 'english').toLowerCase();
+
+// 2. On configure l'affichage et le drapeau selon ce que contient la variable
+let botLang = 'English';
+let langFlag = '🇬🇧';
+
+if (rawLang.includes('french') || rawLang.includes('fr')) {
+    botLang = 'French';
+    langFlag = '🇫🇷';
+} else if (rawLang.includes('spanish') || rawLang.includes('es')) {
+    botLang = 'Turkish';
+    langFlag = '🇹🇷';
+}
         //message et lien 
         const texte = ` ${botName} et merci d'avoir choisi SYNAPSE-X un bot multitâche et facile à déployer.`;
         // 3. Configuration du texte (qui servira de description à l'image)
