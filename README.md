@@ -85,14 +85,16 @@ SESSION=RGNK~d7a5s66,RGNK~7ad8cW
 
 ```
 SESSION=""
-HANDLERS="#"
+HANDLERS="!"
 SUDO="242050336960"
 LANGUAGE="en"
 USE_SERVER=true
 GEMINI_API_KEY=
 CMD_REACTION=true
-READ_MESSAGES=true
-ALWAYS_ONLINE=true
+READ_MESSAGES=false
+ALWAYS_ONLINE=false
+#for railway, koyeb and replit
+DATABASE_URL=
 ```
 
 ## Running the Bot
