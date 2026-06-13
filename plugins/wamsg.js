@@ -60,7 +60,7 @@ Module(
 );
 Module(
   {
-    pattern: "forward ?(.*)",
+    pattern: "transfert ?(.*)",
     fromMe: true,
     desc: "Forwards replied message to the given jid",
     use: "whatsapp",
