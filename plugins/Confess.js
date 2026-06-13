@@ -8,7 +8,7 @@ Module({
     pattern: 'confess',
     fromMe: false,
     desc: 'Active le mode confession pour le groupe',
-    type: 'group'
+    use: 'group'
 }, async (message) => {
     const groupId = message.jid;
     const groupName = (await message.client.groupMetadata(groupId)).subject;
