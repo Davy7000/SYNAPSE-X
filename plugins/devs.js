@@ -10,8 +10,8 @@ Module({
     use: 'oss'
 }, async (message, match) => {
     try {
-        let ownerMessage = `👑 *[ FONDATEURS DE SYNAPSE-X ]*\n`;
-        ownerMessage += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        let ownerMessage = `👑 *[ FONDATEURS SYNAPSE-X ]*\n`;
+        ownerMessage += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
         
         ownerMessage += `🧠 *T W I L I G H T³₆⁹ 모* (Génie Concepteur)\n`;
         ownerMessage += `• *Rôle :* Développeur Principal & Architecte Core\n`;
@@ -23,7 +23,7 @@ Module({
         
         ownerMessage += `🏢 *Organisation :* OSS Company\n\n`;
         ownerMessage += `🇨🇬 *Origine :* République du Congo\n`;
-        ownerMessage += `━━━━━━━━━━━━━━━━━━━━━━\n`;
+        ownerMessage += `━━━━━━━━━━━━━━━━━━━━━\n`;
         ownerMessage += `> 💡 _L'innovation n'est rien sans une exécution parfaite._\n`;
         ownerMessage += `> *Propulsé par l'OSS Company* 🌐 https://ossynapse.netlify.app/oss_company\n`;
 
