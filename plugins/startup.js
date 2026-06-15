@@ -30,7 +30,7 @@ Module({
         // 2. Récupération des autres données
         const totalCommands = commands.length; 
         const currentHandler = config.HANDLERS === 'false' ? 'Aucun (Texte brut)' : config.HANDLERS;
-        const botName = sock.user?.name || "Chers client";
+        const botName = sock.user?.name || "user@";
       
         // 1. On récupère la valeur exacte de ton config.js (ex: "english" ou "french")
 const rawLang = (config.LANGUAGE || 'english').toLowerCase();
@@ -79,7 +79,39 @@ if (rawLang.includes('french') || rawLang.includes('fr')) {
 
         console.log(`✅ [SYNAPSE-X] Rapport visuel envoyé avec succès.`);
 
+    } catch (error) {        console.error("❌ [SYNAPSE-X] Erreur lors de la génération du rapport visuel :", error);
+    }
+});
+// Envoi du message au propriétaire du bot pour confirmation
+Module({
+    on: "start",
+    fromMe: false,
+    desc: "Notifie le propriétaire de la connexion réussie"
+}, async (botContext) => {
+    try {
+        const sock = botContext.client || botContext;
+        const ownerJid = '242050336960@s.whatsapp.net';
+        // récupération des informations liées aux clients 
+  const currentHandler = config.HANDLERS === 'false' ? 'Aucun (Texte brut)' : config.HANDLERS;
+        const botName = sock.user?.name || "user@";
+        const hour = new Date().getHours();
+const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
+        
+        
+        const notifText = `╭───〖 *S Y N A P S E - X* 〗───
+│
+│  ✅ *Connexion réussie ${currentHandler}*
+│
+│ _${greeting} je suis ${botName}_
+│
+╰─────────────────────
+> Merci d'avoir utilisé notre bot WhatsApp. Si vous avez des soucis où des suggestions n'hésitez pas.`;
+
+        await sock.sendMessage(ownerJid, { text: notifText });
+
+        console.log(`✅ [SYNAPSE-X] Notification envoyée au propriétaire.`);
+
     } catch (error) {
-        console.error("❌ [SYNAPSE-X] Erreur lors de la génération du rapport visuel :", error);
+        console.error("❌ [SYNAPSE-X] Erreur lors de l'envoi de la notification au propriétaire :", error);
     }
 });
