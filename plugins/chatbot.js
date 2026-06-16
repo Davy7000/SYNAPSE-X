@@ -5,6 +5,79 @@ const fromMe = config.MODE !== "public";
 const { setVar } = require("./manage");
 const fs = require("fs");
 const { callGenerativeAI } = require("./utils/misc");
+//ligne ai ajouter
+
+function getCurrentDateTime() {
+    const now = new Date();
+    const utcPlus1 = new Date(now.getTime() + (1 * 60 * 60 * 1000));
+    
+    const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    const day = days[utcPlus1.getUTCDay()];
+    const date = utcPlus1.getUTCDate();
+    const month = months[utcPlus1.getUTCMonth()];
+    const year = utcPlus1.getUTCFullYear();
+    const hours = String(utcPlus1.getUTCHours()).padStart(2, '0');
+    const minutes = String(utcPlus1.getUTCMinutes()).padStart(2, '0');
+
+    return `${day} ${date} ${month} ${year} à ${hours}h${minutes} (UTC+1)`;
+}
+//information en temps reel
+const TAVILY_API_KEY = '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';
+
+const NEWS_KEYWORDS = [
+    'actualité', 'news', 'nouvelles', 'récent', 'dernier', 'dernière',
+    'latest', 'recent', 'événement', 'monde', 'politique', 'économie',
+    'sport', 'technologie', 'science', 'coupe', 'match', 'résultat',
+    'score', 'tournoi', 'championnat', 'guerre', 'élection', 'président',
+    'ministre', 'ligue', 'transfert', 'classement', 'météo', 'catastrophe',
+    'tremblement', 'accident', 'attentat', 'décès', 'mort', 'naissance',
+    'découverte', 'invention', 'lancement', 'sortie', 'annonce', 'déclaration'
+];
+
+function isNewsRelated(text) {
+    const lower = text.toLowerCase();
+    return NEWS_KEYWORDS.some(k => lower.includes(k));
+}
+
+async function fetchNewsContext(query) {
+    try {
+        const response = await axios.post('https://api.tavily.com/search', {
+            api_key: TAVILY_API_KEY,
+            query: query,
+            search_depth: 'advanced',
+            include_answer: true,
+            include_raw_content: false,
+            max_results: 5,
+            include_domains: [],
+            exclude_domains: []
+        }, {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 10000
+        });
+
+        const data = response.data;
+        let context = '';
+
+        if (data.answer) {
+            context += `Réponse directe : ${data.answer}\n\n`;
+        }
+
+        if (data.results?.length) {
+            context += `Sources :\n` + data.results.map((r, i) =>
+                `${i + 1}. ${r.title}\n   ${r.content?.slice(0, 200)}...`
+            ).join('\n\n');
+        }
+
+        return context || null;
+    } catch (e) {
+        console.error('Tavily error:', e.message);
+        return null;
+    }
+}
+//fin de l'ajout
+
 
 const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
 const models = [
@@ -108,6 +181,25 @@ async function getAIResponse(message, chatJid, imageBuffer = null) {
         role: msg.role,
         parts: [{ text: msg.text }],
       });
+    });
+
+    const currentDateTime = getCurrentDateTime();
+    let contextInjection = `Date et heure actuelles : ${currentDateTime}\n`;
+
+    if (isNewsRelated(message)) {
+      const news = await fetchNewsContext(message);
+      if (news) {
+        contextInjection += `\nDernières actualités :\n${news}\n`;
+      }
+    }
+
+    contents.push({
+      role: "user",
+      parts: [{ text: `[Contexte système]\n${contextInjection}` }],
+    });
+    contents.push({
+      role: "model",
+      parts: [{ text: "J'ai pris en compte la date, l'heure et les actualités en temps réel." }],
     });
 
     const parts = [{ text: message }];
@@ -585,80 +677,86 @@ Module(
     }
   }
 );
-
+// mise a jour 16/juin/2026
 Module(
-  {
-    pattern: "ai ?(.*)",
-    fromMe,
-    desc: "Ask Gemini AI with text and/or image input",
-    type: "ai",
-  },
-  async (message, match) => {
-    let imageParts = [];
-    let prompt = match[1]?.trim() || "";
+    {
+        pattern: "ai ?(.*)",
+        fromMe,
+        desc: "Ask Gemini AI with text and/or image input",
+        type: "ai",
+    },
+    async (message, match) => {
+        let imageParts = [];
+        let prompt = match[1]?.trim() || "";
 
-    if (message.reply_message) {
-      if (message.reply_message.image) {
-        try {
-          const buffer = await message.reply_message.download("buffer");
-          const imagePart = await imageToGenerativePart(buffer);
-          if (imagePart) imageParts.push(imagePart);
-        } catch (error) {
-          console.error("Error downloading image:", error);
-          return await message.sendReply("❌ Failed to download the image.");
-        }
-        if (!prompt) prompt = "What do you see in this image?";
-      }
-      else if (message.reply_message.album) {
-        try {
-          const albumData = await message.reply_message.download();
-
-          for (const imagePath of albumData.images) {
-            try {
-              const buffer = fs.readFileSync(imagePath);
-              const imagePart = await imageToGenerativePart(buffer);
-              if (imagePart) imageParts.push(imagePart);
-            } catch (err) {
-              console.error("Error processing album image:", err);
+        if (message.reply_message) {
+            if (message.reply_message.image) {
+                try {
+                    const buffer = await message.reply_message.download("buffer");
+                    const imagePart = await imageToGenerativePart(buffer);
+                    if (imagePart) imageParts.push(imagePart);
+                } catch (error) {
+                    console.error("Error downloading image:", error);
+                    return await message.sendReply("❌ Failed to download the image.");
+                }
+                if (!prompt) prompt = "What do you see in this image?";
+            } else if (message.reply_message.album) {
+                try {
+                    const albumData = await message.reply_message.download();
+                    for (const imagePath of albumData.images) {
+                        try {
+                            const buffer = fs.readFileSync(imagePath);
+                            const imagePart = await imageToGenerativePart(buffer);
+                            if (imagePart) imageParts.push(imagePart);
+                        } catch (err) {
+                            console.error("Error processing album image:", err);
+                        }
+                    }
+                    if (!imageParts.length) return await message.sendReply("❌ No images found in album.");
+                    if (!prompt) prompt = "Analyze these images for me.";
+                } catch (error) {
+                    console.error("Error downloading album:", error);
+                    return await message.sendReply("❌ Failed to download album.");
+                }
+            } else if (message.reply_message.text && !prompt) {
+                prompt = message.reply_message.text;
             }
-          }
-
-          if (!imageParts.length) {
-            return await message.sendReply("❌ No images found in album.");
-          }
-          if (!prompt) prompt = "Analyze these images for me.";
-        } catch (error) {
-          console.error("Error downloading album:", error);
-          return await message.sendReply("❌ Failed to download album.");
         }
-      }
-      else if (message.reply_message.text && !prompt) {
-        prompt = message.reply_message.text;
-      }
+
+        if (!prompt && !imageParts.length) {
+            return await message.sendReply("_Please provide a prompt or reply to a message/image._");
+        }
+
+        const currentDateTime = getCurrentDateTime();
+        let contextInjection = `Date et heure actuelles : ${currentDateTime}\n`;
+
+        if (isNewsRelated(prompt)) {
+            const news = await fetchNewsContext(prompt);
+            if (news) {
+                contextInjection += `\nDernières actualités :\n${news}\n`;
+            }
+        }
+
+        const enrichedPrompt = `[Contexte système]\n${contextInjection}\n[Question de l'utilisateur]\n${prompt}`;
+
+        let sent_msg;
+        try {
+            sent_msg = await message.sendReply("_Thinking..._");
+            const fullText = await callGenerativeAI(enrichedPrompt, imageParts, message, sent_msg);
+
+            if (!fullText) {
+                await message.edit("❌ Received empty response from AI.", message.jid, sent_msg.key);
+                return;
+            }
+
+            await message.edit(fullText, message.jid, sent_msg.key);
+        } catch (error) {
+            console.error("AI command error:", error.message);
+            if (sent_msg) {
+                await message.edit("❌ An error occurred with the AI API.", message.jid, sent_msg.key);
+            } else {
+                await message.sendReply("❌ An error occurred with the AI API.");
+            }
+        }
     }
-
-    if (!prompt && !imageParts.length) {
-      return await message.sendReply("Please provide a prompt or reply to a message/image.");
-    }
-
-    let sent_msg;
-    try {
-      sent_msg = await message.sendReply("_Thinking..._");
-      const fullText = await callGenerativeAI(prompt, imageParts, message, sent_msg);
-
-      if (!fullText) {
-        await message.edit("❌ Received empty response from AI.", message.jid, sent_msg.key);
-        return;
-      }
-
-      await message.edit(fullText, message.jid, sent_msg.key);
-    } catch (error) {
-      console.error("AI command error:", error.message);
-      if (sent_msg) {
-        await message.edit("❌ An error occurred with the AI API.", message.jid, sent_msg.key);
-      } else {
-        await message.sendReply("❌ An error occurred with the AI API.");
-      }
-    }
-  }
 );
