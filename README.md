@@ -66,8 +66,8 @@ Make sure you have the following installed on your system or server:
 
 ### 1. Clone Repository
 ```bash
-npm install -g yarn pm2
-git clone [https://github.com/Davy7000/SYNAPSE-X.git](https://github.com/Davy7000/SYNAPSE-X.git)
+sudo npm install -g yarn pm2
+git clone https://github.com/Davy7000/SYNAPSE-X.git
 cd SYNAPSE-X
 
 ```
