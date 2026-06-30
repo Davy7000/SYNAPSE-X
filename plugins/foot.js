@@ -31,11 +31,11 @@ function formatStandings(table, league) {
         return `│  ${pos}. ${name} ${pts}pts  ${played}J ${won}G ${draw}N ${lost}P`;
     });
 
-    return `╭───〖 *${league.name}* 〗───
+    return `╭───〖 *${league.name}${league.emoji}* 〗───
 │
 │  *#Équipe          Pts  J  G  N  P*
 │  ────────────────────
-${league.emoji}${rows.join('\n')}
+${rows.join('\n')}
 │
 ╰─────────────────────
 
