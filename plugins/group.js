@@ -51,7 +51,7 @@ Module(
     desc: Lang.KICK_DESC,
     use: "group",
     usage:
-      ".kick @mention or reply\n.kick all (removes everyone)\n.kick 91 (removes numbers starting with 91)",
+      ".kick @mention or reply\n.kick all (removes everyone)\n.kick 243 (removes numbers starting with 243)",
   },
   async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND);
@@ -68,7 +68,15 @@ Module(
           if (!admin) return await message.sendReply(Lang.NOT_ADMIN);
           let users = participants.filter((member) => !member.admin);
           await message.send(
-            `_❗❗ Kicking *every* members of ${subject}. Restart bot immediately to kill this process ❗❗_\n_*You have 5 seconds left*_`
+              `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+▏ ⌬     Shiran Teisen    ⌬      ▏
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+𝕷𝖊 𝖒𝖔𝖓𝖉𝖊 🌐𝖕𝖆𝖗𝖑𝖊 𝖉𝖊 𝖕𝖆𝖎𝖝☮️… 𝖒𝖆𝖎𝖘 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 ❌𝖓𝖊 𝖘𝖊𝖒𝖇𝖑𝖊 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖘𝖔𝖓 𝖕𝖗𝖎𝖝💵🏦. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖓’𝖆𝖚𝖗𝖔𝖓𝖘 𝖕𝖆𝖘⛔☯️ 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊💀👾, 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖈𝖗é𝖊𝖗 𝖉𝖊 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊👺. 𝖀𝖓𝖊 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 𝖕𝖊𝖗𝖉 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖆𝖎𝖒𝖊❤️… 𝖆𝖑𝖔𝖗𝖘 𝖊𝖑𝖑𝖊 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 ⚕️𝖚𝖓 𝖈𝖔𝖚𝖕𝖆𝖇𝖑𝖊💔. 𝕷𝖆 𝖍𝖆𝖎𝖓𝖊 𝖓𝖆î𝖙🤌. 𝕷𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖆𝖗𝖗𝖎𝖛𝖊👿. 𝕰𝖙 𝖑𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖈𝖗é𝖊 𝖚𝖓𝖊 𝖓𝖔𝖚𝖛𝖊𝖑𝖑𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊👾👿. 𝕻𝖚𝖎𝖘 𝖈𝖊𝖙𝖙𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊⛔, à 𝖘𝖔𝖓 𝖙𝖔𝖚𝖗, 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 à 𝖍𝖆ï𝖗🪯. 𝕮’𝖊𝖘𝖙 𝖆𝖎𝖓𝖘𝖎 𝖖𝖚𝖊 𝖑𝖊 𝖈𝖞𝖈𝖑𝖊 𝖗𝖊𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊♾️⚛️. 𝖁𝖔𝖚𝖘 𝖛𝖔𝖚𝖑𝖊𝖟 𝖒𝖊𝖙𝖙𝖗𝖊 𝖋𝖎𝖓 à 𝖑𝖆 𝖌𝖚𝖊𝖗𝖗𝖊 ?☯️ 𝕬𝖑𝖔𝖗𝖘 𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊𝖟 𝖕𝖆𝖗 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖋𝖆𝖎𝖙 𝖆𝖚𝖝 𝖍𝖔𝖒𝖒𝖊𝖘🕎🪯. 𝕮𝖆𝖗 𝖈𝖊𝖑𝖚𝖎 𝖖𝖚𝖎 𝖓’𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗☦️ 𝖓𝖊 𝖕𝖊𝖚𝖙 𝖕𝖆𝖘 𝖛é𝖗𝖎𝖙𝖆𝖇𝖑𝖊𝖒𝖊𝖓𝖙 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊𝖑𝖚𝖎 👾𝖖𝖚𝖎 𝖘𝖔𝖚𝖋𝖋𝖗𝖊❌. 𝕷𝖆 𝖕𝖆𝖎𝖝 𝖓’𝖊𝖘𝖙 𝖕𝖆𝖘 𝖑’𝖆𝖇𝖘𝖊𝖓𝖈𝖊 𝖉𝖊 𝖉𝖔𝖚𝖑𝖊𝖚𝖗⭕❌. 𝕮’𝖊𝖘𝖙 𝖑𝖊 𝖒𝖔𝖒𝖊𝖓𝖙 𝖔ù 𝖑’𝖍𝖔𝖒𝖒𝖊☮️ 𝖉é𝖈𝖎𝖉𝖊 𝖊𝖓𝖋𝖎𝖓 𝖉𝖊 𝖓𝖊 𝖕𝖑𝖚𝖘 𝖙𝖗𝖆𝖓𝖘𝖒𝖊𝖙𝖙𝖗𝖊 𝖘𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗 ⚛️𝖆𝖚𝖝 𝖆𝖚𝖙𝖗𝖊𝖘🈹🈲. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖗é𝖕𝖔𝖓𝖉𝖗𝖊 à 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊 𝖕𝖆𝖗 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊… ☢️☣️𝖑𝖊 𝖒𝖔𝖓𝖉𝖊 𝖓𝖊 𝖈𝖔𝖓𝖓𝖆î𝖙𝖗𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖑𝖆 𝖕𝖆𝖎𝖝.🌐☣️ 
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+▏ ⌬     Shiran Teisen    ⌬      ▏
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+
+> Maintenant ☯️ dite à Dieu ☦️ au groupe ${subject} ⚛️`
           );
           await new Promise((r) => setTimeout(r, 5000));
           for (let member of users) {

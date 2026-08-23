@@ -10,10 +10,23 @@ Module({
 }, async (message, match) => {
     // Liste enrichie d'emojis pour l'animation
     let emo = [
-        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💖', 
-        '💝', '✨', '🔥', '🥰', '😍', '🤩', '😘', '💋', '🌹', 
-        '🌷', '🌸', '💐', '🎈', '🎉', '🧸', '❤️', '💘'
-    ];
+    //  Magie, Fête, Câlins et Cadeaux
+    '✨', '🔥', '💫', '🌟', '⭐', '🎈', '🎉', '🎊', '🎁', '🎀', 
+    '💌', '💎', '👑', '💋', '🫂', '🕊️', '🪄', '🥂', '🍾',
+
+    //  Visages et Affection
+    '🥰', '😍', '🤩', '😘', '😗', '😚', '😋', '🤗', '🫣', '🤭', '🫠',
+
+    //  Teddies et Animaux Mignons
+    '🧸', '🐼', '🐨', '🐰', '🐱', '🦊', '🦄', '🐣', '🦔', '🐥',
+
+    //  Fleurs et Nature
+    '🌹', '🌷', '🌸', '💐', '🌺', '🌻', '🌼', '🥀', '☘️', '🍀', 
+
+     //  Cœurs et Amour
+    '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💖', 
+    '💝', '💘', '💕', '💞', '💓', '💗', '❣️', '💟', '❤️‍🔥', '❤️‍🩹'
+];
 
     // Message d'envoi initial
     const sent_msg = await message.sendReply("*_Je t'aime trés fort_*");
@@ -33,7 +46,7 @@ Module({
         if (i === emo.length - 1) {
             messageAnime += `\n\n` +
                 
-               `> _Design original par l'OSS Company_\n`;
+               `> *_Je t'aime trés fort_*\n`;
         }
 
         // Modification en temps réel

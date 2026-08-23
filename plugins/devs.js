@@ -10,16 +10,20 @@ Module({
     use: 'oss'
 }, async (message, match) => {
     try {
-        let ownerMessage = `👑 *[ FONDATEURS SYNAPSE-X ]*\n`;
+        let ownerMessage = `👑 *[ FONDATEURS SYNAPSE-X ]* 👑\n`;
         ownerMessage += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
         
-        ownerMessage += `🧠 *T W I L I G H T³₆⁹ 모* (Génie Concepteur)\n`;
+        ownerMessage += `🧠 *T W I L I G H T ³₆⁹ 모* (Génie Concepteur)\n`;
         ownerMessage += `• *Rôle :* Développeur Principal & Architecte Core\n`;
         ownerMessage += `• *Spécialité :* Logique système, optimisation VPS & infrastructure\n\n`;
         
         ownerMessage += `✨ *K A R M A ³₆⁹ 모* (Génie Concepteur)\n`;
         ownerMessage += `• *Rôle :* Concepteur UI/UX & Intégrateur de Modules\n`;
         ownerMessage += `• *Spécialité :* Gestion des flux, Design & interactivité\n\n`;
+
+        ownerMessage += `✨ *P S Y G E R S ³₆⁹ 모* (Génie Concepteur)\n`;
+        ownerMessage += `• *Rôle :* Community Manager\n`;
+        ownerMessage += `• *Spécialité :* Charger de la communauté et de la gestion du personnel\n\n`;
         
         ownerMessage += `🏢 *Organisation :* OSS Company\n\n`;
         ownerMessage += `🇨🇬 *Origine :* République du Congo\n`;
