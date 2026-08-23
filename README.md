@@ -1,7 +1,7 @@
 
 <div align="center">
 
-# ⚡ SYNAPSE-X ⚡
+# ⚡ SYNAPSE-X BOT⚡
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/Davy7000/SYNAPSE-X?style=for-the-badge&color=ff3e3e&logo=github" alt="Stars"/>
