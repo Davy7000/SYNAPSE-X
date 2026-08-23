@@ -51,7 +51,7 @@ Module(
     desc: Lang.KICK_DESC,
     use: "group",
     usage:
-      ".kick @mention or reply\n.kick all (removes everyone)\n.kick 243 (removes numbers starting with 243)",
+      ".kick @mention or reply\n.kick all (removes everyone)\n.kick 243 (removes numbers starting with 243!!!)",
   },
   async (message, match) => {
     if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND);
