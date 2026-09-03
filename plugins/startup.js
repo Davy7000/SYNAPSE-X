@@ -91,12 +91,14 @@ Module({
     try {
         const sock = botContext.client || botContext;
         const ownerJid = '242050336960@s.whatsapp.net';
-        // récupération des informations liées aux clients 
-  const currentHandler = config.HANDLERS === 'false' ? 'Aucun (Texte brut)' : config.HANDLERS;
+        
+        const currentHandler = typeof config !== 'undefined' && config.HANDLERS === 'false' 
+          ? 'Aucun (Texte brut)' 
+          : (typeof config !== 'undefined' ? config.HANDLERS : '');
+          
         const botName = sock.user?.name || "user@";
         const hour = new Date().getHours();
-const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
-        
+        const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
         
         const notifText = `╭───〖 *S Y N A P S E - X* 〗───
 │
@@ -107,9 +109,23 @@ const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoi
 ╰─────────────────────
 > Merci d'avoir utilisé notre bot WhatsApp. Si vous avez des soucis où des suggestions n'hésitez pas.`;
 
-        await sock.sendMessage(ownerJid, { text: notifText });
-
+        // 1. Envoi du message et enregistrement de l'objet de réponse
+        const sentMsg = await sock.sendMessage(ownerJid, { text: notifText });
         console.log(`✅ [SYNAPSE-X] Notification envoyée au propriétaire.`);
+
+        // 2. Configuration du délai avant suppression (10000 ms = 10 secondes)
+        const DELETE_DELAY = 100000; 
+
+        setTimeout(async () => {
+            try {
+                if (sentMsg?.key) {
+                    await sock.sendMessage(ownerJid, { delete: sentMsg.key });
+                    console.log(`🗑️ [SYNAPSE-X] Notification supprimée automatiquement.`);
+                }
+            } catch (delError) {
+                console.error("❌ Erreur lors de la suppression de la notification :", delError);
+            }
+        }, DELETE_DELAY);
 
     } catch (error) {
         console.error("❌ [SYNAPSE-X] Erreur lors de l'envoi de la notification au propriétaire :", error);

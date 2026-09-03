@@ -338,7 +338,7 @@ Module(
     const totalUsers = await getTotalUserCount();
     const infoParts = config.BOT_INFO.split(";");
     const botName = infoParts[0] || "My Bot";
-    const botOwner = "𝑻𝒘𝒊𝒍𝒊𝒈𝒉𝒕_𝑲𝒊𝒏𝒈☯❥";
+    const botOwner = "*TWILIGHT모*";
     const botVersion = VERSION;
 
     const videoPath = path.join(__dirname, "utils/images/video.mp4");
