@@ -113,8 +113,8 @@ Module({
         const sentMsg = await sock.sendMessage(ownerJid, { text: notifText });
         console.log(`✅ [SYNAPSE-X] Notification envoyée au propriétaire.`);
 
-        // 2. Configuration du délai avant suppression (10000 ms = 10 secondes)
-        const DELETE_DELAY = 100000; 
+        // 2. Configuration du délai avant suppression (60000 ms = 60 secondes)
+        const DELETE_DELAY = 60000; 
 
         setTimeout(async () => {
             try {
