@@ -10,12 +10,12 @@ const isPrivateBot = config.MODE !== 'public';
 ===================================================================================*/
 
 const OWNER_DETAILS = {
-    name: 'T W I L I G H T 모',
-    title: 'Créateur Officielle',
-    number: '242050336960',
+    name: 'P S Y G E R S 모',
+    title: 'Community Manager',
+    number: '242065598566',
     body: 'Focus . Build . Achieve',
     image: "https://files.catbox.moe/nlnd2v.jpg",
-    thumbnailUrl: 'https://gist.github.com/Davy7000'
+    thumbnailUrl: 'https://gist.github.com/'
 };
 
 /*===================================================================================
@@ -25,10 +25,10 @@ const OWNER_DETAILS = {
 
 // Owner command for SYNAPSE-X style
 Module({
-    pattern: 'owner',
+    pattern: 'manager',
     fromMe: isPrivateBot,
     use: 'oss',
-    desc: 'Bot Owner',
+    desc: 'Bot manager',
     type: 'user'
 }, async (message, match) => {
     try {
