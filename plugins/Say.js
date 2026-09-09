@@ -3,7 +3,21 @@ const { Module } = require('../main');
 const translateText = async (text, targetLang = 'fr') => {
     const encoded = encodeURIComponent(text);
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encoded}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Traduction indisponible (HTTP ${response.status})`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('json')) {
+        throw new Error('Réponse inattendue du service de traduction');
+    }
+
     const data = await response.json();
     return data[0].map(item => item[0]).join('');
 };
