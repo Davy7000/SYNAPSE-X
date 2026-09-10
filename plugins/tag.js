@@ -67,7 +67,7 @@ Module({
     // Le bot se déclenche si l'une des deux conditions est vraie
     if (isTagged || isTagTous) {
         // --- LIEN DE TA VIDÉO ICI ---
-        const videoUrl = 'https://ossynapse.netlify.app/video/video.mp4'; 
+        const videoUrl = 'https://eliteprotech-url.zone.id/1789028345720243ril.mp4'; 
 
         try {
             await message.sendMessage(
