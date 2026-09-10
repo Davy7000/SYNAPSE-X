@@ -17,7 +17,12 @@ const citations = [
     "Le courage c'est de savoir avoir peur et d'agir quand même.",
     "Votre temps est limité, ne le gâchez pas en vivant la vie de quelqu'un d'autre.",
     "La persévérance est la mère du succès.",
-    "Un voyage de mille lieues commence toujours par un premier pas."
+    "Un voyage de mille lieues commence toujours par un premier pas.",
+    "je pense donc je suis.",
+    "La connaissance parle, mais la sagesse écoute.",
+    "Le bonheur est réel seulement lorsqu'il est partagé.",
+    "La vie est ce qui arrive quand vous êtes occupé à faire d'autres projets.",
+    "Ne jugez pas chaque jour par la récolte que vous faites, mais par les graines que vous plantez."
 ];
 
 Module({
