@@ -1,7 +1,7 @@
 //pattern: 'status_sender',
 
 // Matching keywords
-const snds = "send,snd,snt,sent,ayak,ayk,gev,envoi,envoie"
+const snds = "send,snd,snt,ayak,ayk,gev,envoi,envoie"
 
 // Custom message to be sent along with status
 const MSG = ""; 
