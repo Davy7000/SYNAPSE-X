@@ -69,7 +69,7 @@ if (rawLang.includes('french') || rawLang.includes('fr')) {
 
         // ─── LIEN DE TON IMAGE ICI (PNG ou JPG) ───
         // Tu peux héberger ton image en ligne et mettre son lien direct ici
-        const imageUrl = 'https://files.catbox.moe/utb6rn.jpg'; 
+        const imageUrl = 'https://eliteprotech-url.zone.id/1790162923498sapf8q.png'; 
 
         // 4. Envoi du package complet (Image + Texte)
         await sock.sendMessage(myJid, { 
