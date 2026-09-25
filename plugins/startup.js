@@ -47,10 +47,10 @@ if (rawLang.includes('french') || rawLang.includes('fr')) {
     langFlag = '🇹🇷';
 }
         //message et lien 
-        const texte = ` ${botName} et merci d'avoir choisi SYNAPSE-X un bot multitâche et facile à déployer.`;
+        const texte = ` ${botName} et merci d'avoir choisi  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 un bot multitâche et facile à déployer.`;
         // 3. Configuration du texte (qui servira de description à l'image)
         const bootMessage = `
-╭──⧼ *SYNAPSE-X* ⧽──≽
+╭──⧼ * 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* ⧽──≽
 │┃
 │┃ ❏ *Statut :* _Opérationnel et prêt_
 │┃ 
@@ -100,7 +100,7 @@ Module({
         const hour = new Date().getHours();
         const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
         
-        const notifText = `╭───〖 *S Y N A P S E - X* 〗───
+        const notifText = `╭───〖 * 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* 〗───
 │
 │  ✅ *Connexion réussie ${currentHandler}*
 │

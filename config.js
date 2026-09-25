@@ -237,14 +237,14 @@ const baseConfig = {
     "78c84c62b32a88e86daf87dd509a657a",
   ],
   RG: process.env.RG || "",
-  BOT_INFO: process.env.BOT_INFO || "Ｓｙｎａｐｓｅ ｘ;twilight;man",
+  BOT_INFO: process.env.BOT_INFO || " 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모;twilight;man",
   RBG_KEY: process.env.RBG_KEY || "",
   ALLOWED: process.env.ALLOWED || "91,94,2",
   NOT_ALLOWED: process.env.NOT_ALLOWED || "852",
   CHATBOT: process.env.CHATBOT || "off",
   HANDLERS: process.env.HANDLERS || "!",
-  STICKER_DATA: process.env.STICKER_DATA || "Ｓｙｎａｐｓｅ ｘ",
-  BOT_NAME: process.env.BOT_NAME || "ＳYNAPSE-X",
+  STICKER_DATA: process.env.STICKER_DATA || " 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모",
+  BOT_NAME: process.env.BOT_NAME || " 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모",
   AUDIO_DATA:
     process.env.AUDIO_DATA === undefined || process.env.AUDIO_DATA === "private"
       ? "default"

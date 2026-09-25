@@ -10,7 +10,7 @@ Module({
     use: 'oss'
 }, async (message, match) => {
     try {
-        let ownerMessage = `👑 *[ FONDATEURS SYNAPSE-X ]* 👑\n`;
+        let ownerMessage = `👑 *[ FONDATEURS  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ]* 👑\n`;
         ownerMessage += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
         
         ownerMessage += `🧠 *T W I L I G H T ³₆⁹ 모* (Génie Concepteur)\n`;
