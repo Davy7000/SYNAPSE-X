@@ -294,7 +294,7 @@ Module(
     desc: "Displays the bot command menu.",
   },
   async (message, match) => {
-    const stars = ["❃"];
+    const stars = ["❃","♛","모"];
     const star = stars[Math.floor(Math.random() * stars.length)];
 
     let use_ = commands.map((e) => e.use);
@@ -323,27 +323,32 @@ Module(
         i = i + 1;
         const newn = n.charAt(0).toUpperCase() + n.slice(1);
         final += `${
-          final.includes(newn) ? "" : "\n\n╭═〘 *_" + newn + "_*_〙═⊷❍"
-        }\n┃${star}│ \ ${i} \ ${handlerPrefix}${x.trim()}  ${
+          final.includes(newn) ? "" : "\n\n╭═〘 " + newn + " 〙═⊷❍"
+        }\n┃${star}│ ${i} ❯ ${handlerPrefix}${x.trim()}  ${
           cmd_obj[n]?.indexOf(x) === cmd_obj[n]?.length - 1
-            ? `\n┃${star}╰─────────────────\n╰────────────────`
+            ? `\n┃${star}╰───────────────\n╰───────────────`
             : ""
         }`;
       }
     }
-    let oss = '모『Ⓞ𝐒𝐒 𝐂Ⓞ𝐌𝐏𝐀𝐆𝐍𝐘『🧠』모';
+    let oss = 'OSS COMPAGNY';
     let cmdmenu = final.trim();
     const used = bytesToSize(os.freemem());
     const total = bytesToSize(os.totalmem());
     const totalUsers = await getTotalUserCount();
     const infoParts = config.BOT_INFO.split(";");
     const botName = infoParts[0] || "My Bot";
-    const botOwner = "*TWILIGHT모*";
+    const botOwner = "TWILIGHT모";
     const botVersion = VERSION;
 
     const videoPath = path.join(__dirname, "utils/images/video.mp4");
-      
-    const menu = `╭═〘${botName}〙═⊷❍
+
+    // Bloc monospace (```...```): en police à chasse fixe, chaque
+    // caractère occupe la même largeur, donc les box-drawing (╭ │ ╰ ─)
+    // s'alignent verticalement de la même façon sur tous les appareils.
+    // Les *astérisques* ne mettent PAS en gras à l'intérieur d'un bloc
+    // monospace WhatsApp — ils ont donc été retirés ici.
+    const rawMenu = `╭═〘${botName}〙═⊷❍
 ┃${star}╭──────────────
 ┃${star}│prefix : ${handlerPrefix}
 ┃${star}│plugins : ${i}
@@ -357,7 +362,10 @@ Module(
 ┃${star}╰───────────────
 ╰═════════════════⊷
 ${cmdmenu}
-> «un projet de ${oss}»`;
+
+• un projet de ${oss}`;
+
+    const menu = "```" + rawMenu + "```";
 
     try {
       await message.client.sendMessage(message.jid, {
