@@ -100,17 +100,24 @@ Module({
         const hour = new Date().getHours();
         const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
         
-        const notifText = `╭───〖 *𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* 〗───
-│
-│  ✅ *Connexion réussie ${currentHandler}*
-│
-│ _${greeting} je suis ${botName}_
-│
-╰─────────────────────
+        const notifText = 
+`╭──⧼ *𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* ⧽──≽
+│┃
+│┃ ❏ *Statut :* _✅ Connexion réussie_
+│┃ 
+│┃ ❏ *Info :* _${greeting} je suis ${botName}_
+│┃ 
+│┃ ❏ *Préfixe :* _Mon préfixe est ${currentHandler}_
+╰───────────── 
 > Merci d'avoir utilisé notre bot WhatsApp. Si vous avez des soucis où des suggestions n'hésitez pas.`;
 
         // 1. Envoi du message et enregistrement de l'objet de réponse
-        const sentMsg = await sock.sendMessage(ownerJid, { text: notifText });
+        const imageUrl = 'https://eliteprotech-url.zone.id/1790162923498sapf8q.png'; 
+        const sentMsg = /*await sock.sendMessage(ownerJid, { text: notifText })*/
+        await sock.sendMessage(ownerJid, { 
+            image: { url: imageUrl }, 
+            caption: notifText 
+        });
         console.log(`✅ [SYNAPSE-X] Notification envoyée au propriétaire.`);
 
         // 2. Configuration du délai avant suppression (60000 ms = 60 secondes)
