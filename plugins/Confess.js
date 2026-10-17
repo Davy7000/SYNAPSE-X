@@ -49,7 +49,7 @@ Module({
     try {
         // Envoi du secret
         await message.client.sendMessage(latestGroupId, {
-            text: `🤫 *NOUVELLE CONFESSION ANONYME*\n\n« ${message.text} »\n\n━━━━━━━━━━━━━━━━━━━━\n_La porte s'est refermée pour cet utilisateur._`
+            text: `🤫 *NOUVELLE CONFESSION ANONYME*\n\n« ${message.text} »\n\n━━━━━━━━━━━━━━\n` + `> La porte s'est refermée pour cet utilisateur.`
         });
 
         // On marque l'utilisateur comme ayant déjà participé

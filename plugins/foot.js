@@ -31,13 +31,13 @@ function formatStandings(table, league) {
         return `│  ${pos}. ${name} ${pts}pts  ${played}J ${won}G ${draw}N ${lost}P`;
     });
 
-    return `╭───〖 *${league.name}${league.emoji}* 〗───
-│
-│  *#Équipe          Pts  J  G  N  P*
-│  ────────────────────
+    return `╟────╢ *${league.name}${league.emoji}* ╟─────╢
+
+    *Équipe          Pts  J  G  N  P*
+╟────────────╢
 ${rows.join('\n')}
-│
-╰─────────────────────
+
+╟────────────╢
 
 > _Top 10 — Mis à jour en temps réel_ ⚽`;
 }
@@ -182,15 +182,16 @@ Module({
         const answer = data.answer || data.results?.[0]?.content || 'Aucune donnée disponible.';
         const truncated = answer.length > 2000 ? answer.slice(0, 2000) + '...' : answer;
 
-        const result = `╭───〖 *🌍 Coupe du Monde* 〗───
-│
+        const result = `╭─〖🌍 Coupe du Monde〗──
+│ 
 ${truncated.split('\n').map(l => `│  ${l}`).join('\n')}
 │
 ╰─────────────────────
 
-> _utilisez trt fr pour la traduction_ ⚽`;
+NB: utilisez trt fr pour la traduction⚽`;
 
-        await message.sendReply(result);
+        const resulte = '```' + result + '```';
+        await message.sendReply(resulte);
         await message.react('✅');
 
     } catch (e) {

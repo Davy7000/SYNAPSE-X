@@ -105,14 +105,14 @@ Module({
 │┃
 │┃ ❏ *Statut :* _✅ Connexion réussie_
 │┃ 
-│┃ ❏ *Info :* _${greeting} je suis ${botName}_
+│┃ ❏ _${greeting} je suis *${botName}*_
 │┃ 
 │┃ ❏ *Préfixe :* _Mon préfixe est ${currentHandler}_
 ╰───────────── 
 > Merci d'avoir utilisé notre bot WhatsApp. Si vous avez des soucis où des suggestions n'hésitez pas.`;
 
         // 1. Envoi du message et enregistrement de l'objet de réponse
-        const imageUrl = 'https://eliteprotech-url.zone.id/1790162923498sapf8q.png'; 
+        const imageUrl = 'https://eliteprotech-url.zone.id/1792105274158nydc5g.jpeg'; 
         const sentMsg = /*await sock.sendMessage(ownerJid, { text: notifText })*/
         await sock.sendMessage(ownerJid, { 
             image: { url: imageUrl }, 
