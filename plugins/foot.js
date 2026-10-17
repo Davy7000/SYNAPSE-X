@@ -31,13 +31,13 @@ function formatStandings(table, league) {
         return `│  ${pos}. ${name} ${pts}pts  ${played}J ${won}G ${draw}N ${lost}P`;
     });
 
-    return `╟────╢ *${league.name}${league.emoji}* ╟─────╢
+    return `╟───╢ *${league.name}${league.emoji}* ╟───╢
 
     *Équipe          Pts  J  G  N  P*
-╟────────────╢
+╟──────────────╢
 ${rows.join('\n')}
 
-╟────────────╢
+╟──────────────╢
 
 > _Top 10 — Mis à jour en temps réel_ ⚽`;
 }
