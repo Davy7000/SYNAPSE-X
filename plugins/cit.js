@@ -1,61 +1,58 @@
+'use strict';
+
 const { Module } = require('../main');
-const { getTempPath } = require('../core/helpers');
-const fs = require('fs');
 
 const citations = [
-    "La vie est un mystère qu'il faut vivre, et non un problème à résoudre.",
-    "Le succès c'est d'aller d'échec en échec sans perdre son enthousiasme.",
-    "La seule façon de faire du bon travail est d'aimer ce que vous faites.",
-    "Soyez le changement que vous voulez voir dans le monde.",
-    "La plus grande gloire n'est pas de ne jamais tomber, mais de se relever à chaque chute.",
-    "Le bonheur n'est pas quelque chose de prêt à l'emploi. Il vient de vos propres actions.",
-    "Croyez en vous-même et tout sera possible.",
-    "La vie ne se mesure pas au nombre de respirations que nous prenons, mais aux moments qui nous coupent le souffle.",
-    "Le seul endroit où le succès vient avant le travail, c'est dans le dictionnaire.",
-    "Tout ce que l'esprit peut concevoir et croire, il peut l'accomplir.",
-    "N'attendez pas. Le moment ne sera jamais parfait.",
-    "Le courage c'est de savoir avoir peur et d'agir quand même.",
-    "Votre temps est limité, ne le gâchez pas en vivant la vie de quelqu'un d'autre.",
-    "La persévérance est la mère du succès.",
-    "Un voyage de mille lieues commence toujours par un premier pas.",
-    "je pense donc je suis.",
-    "La connaissance parle, mais la sagesse écoute.",
-    "Le bonheur est réel seulement lorsqu'il est partagé.",
-    "La vie est ce qui arrive quand vous êtes occupé à faire d'autres projets.",
-    "Ne jugez pas chaque jour par la récolte que vous faites, mais par les graines que vous plantez."
+    { text: "La vie est un mystère qu'il faut vivre, et non un problème à résoudre.", author: "Gandhi" },
+    { text: "Le succès c'est d'aller d'échec en échec sans perdre son enthousiasme.", author: "Winston Churchill" },
+    { text: "La seule façon de faire du bon travail est d'aimer ce que vous faites.", author: "Steve Jobs" },
+    { text: "Soyez le changement que vous voulez voir dans le monde.", author: "Mahatma Gandhi" },
+    { text: "La plus grande gloire n'est pas de ne jamais tomber, mais de se relever à chaque chute.", author: "Nelson Mandela" },
+    { text: "Le bonheur n'est pas quelque chose de prêt à l'emploi. Il vient de vos propres actions.", author: "Dalaï-Lama" },
+    { text: "Croyez en vous-même et tout sera possible.", author: "Chantal Kreviazuk" },
+    { text: "La vie ne se mesure pas au nombre de respirations, mais aux moments qui nous coupent le souffle.", author: "Maya Angelou" },
+    { text: "Le seul endroit où le succès vient avant le travail, c'est dans le dictionnaire.", author: "Vidal Sassoon" },
+    { text: "Tout ce que l'esprit peut concevoir et croire, il peut l'accomplir.", author: "Napoleon Hill" },
+    { text: "N'attendez pas. Le moment ne sera jamais parfait.", author: "Napoleon Hill" },
+    { text: "Le courage c'est de savoir avoir peur et d'agir quand même.", author: "Nelson Mandela" },
+    { text: "Votre temps est limité, ne le gâchez pas en vivant la vie de quelqu'un d'autre.", author: "Steve Jobs" },
+    { text: "La persévérance est la mère du succès.", author: "Proverbe africain" },
+    { text: "Un voyage de mille lieues commence toujours par un premier pas.", author: "Lao-Tseu" },
+    { text: "Je pense donc je suis.", author: "René Descartes" },
+    { text: "La connaissance parle, mais la sagesse écoute.", author: "Jimi Hendrix" },
+    { text: "Le bonheur est réel seulement lorsqu'il est partagé.", author: "Jon Krakauer" },
+    { text: "La vie est ce qui arrive quand vous êtes occupé à faire d'autres projets.", author: "John Lennon" },
+    { text: "Ne jugez pas chaque jour par la récolte que vous faites, mais par les graines que vous plantez.", author: "Robert Louis Stevenson" },
+    { text: "Il n'y a qu'une façon d'échouer, c'est d'abandonner avant d'avoir réussi.", author: "Olivier Lockert" },
+    { text: "Le futur appartient à ceux qui croient à la beauté de leurs rêves.", author: "Eleanor Roosevelt" },
+    { text: "On ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux.", author: "Antoine de Saint-Exupéry" },
+    { text: "La folie, c'est de faire toujours la même chose et de s'attendre à un résultat différent.", author: "Albert Einstein" },
+    { text: "Ils ne savaient pas que c'était impossible, alors ils l'ont fait.", author: "Mark Twain" }
 ];
 
 Module({
     pattern: 'quote',
-    desc: 'Générer une citation motivante en note vocale',
+    desc: 'Génère une citation inspirante et stylée avec son auteur',
     use: 'utilitaire',
     usage: 'quote'
 }, async (message) => {
     try {
         await message.react('⏳');
 
-        const citation = citations[Math.floor(Math.random() * citations.length)];
-        const ttsUrl = `https://api.voicerss.org/?key=0d793190d99c464b9733b08152db1433&hl=fr-fr&src=${encodeURIComponent(citation)}&c=OGG&f=16khz_16bit_mono`;
+        // Sélection aléatoire d'une citation
+        const quoteObj = citations[Math.floor(Math.random() * citations.length)];
 
-        const { default: fetch } = await import('node-fetch');
-        const res = await fetch(ttsUrl);
-        const buffer = await res.buffer();
+        // Design moderne et épuré
+        const quoteCard = 
+            `
+             💬*« ${quoteObj.text} »*\n\n\n` +
+            `✍️ *Auteur :* _${quoteObj.author}_`;
 
-        const firstBytes = buffer.slice(0, 50).toString();
-        if (firstBytes.includes('ERROR') || firstBytes.includes('error')) {
-            return message.sendReply(`_Erreur API VoiceRSS :_ \`${firstBytes}\``);
-        }
-
-        const outputPath = getTempPath('quote.ogg');
-        fs.writeFileSync(outputPath, buffer);
-
-        await message.sendReply(`_"${citation}"_`);
-        await message.sendMessage({ stream: fs.createReadStream(outputPath) }, 'audio', { ptt: true });
-        await message.react('✅');
-
-        fs.unlinkSync(outputPath);
+        await message.sendReply(quoteCard);
+        await message.react('✨');
 
     } catch (e) {
+        console.error("Erreur Plugin Quote:", e);
         await message.react('❌');
         await message.sendReply(`_Erreur :_ \`${e.message}\``);
     }
