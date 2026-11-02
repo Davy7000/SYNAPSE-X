@@ -42,7 +42,7 @@ Module({
 
         quizMsg += `\n*⏱️ Temps :* 60 secondes\n`;
         quizMsg += `*💡 Répondez avec le chiffre correspondant !*\n\n`;
-        quizMsg += `*╚════════════════════╝*`;
+        quizMsg += `*╚═══════════════╝*`;
 
         activeQuiz.add(message.jid);
         await message.client.sendMessage(message.jid, { text: quizMsg }, { quoted: message.data });

@@ -92,7 +92,7 @@ Module({
         const uptime = Math.floor(process.uptime() / 3600);
 
         const finalInterface = `
-╭───〖 *S Y N A P S E - X* 〗───
+╭─〖 *S Y N A P S E - X* 〗─
 │
 │  🚀 *Vitesse* : \_${latence} ms\_
 │
@@ -102,7 +102,7 @@ Module({
 │
 │  ⏳ *Uptime* : \_${uptime}h active\_
 │
-╰─────────────────────
+╰───────────
 
 > *Système en mode Hyper-Drive* ⚡`.trim();
 

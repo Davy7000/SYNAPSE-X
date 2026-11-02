@@ -25,7 +25,7 @@ Module({
     }
 
     // Instructions d'utilisation détaillées
-    const helpText = `*───「 TAGBOT SYSTEM 」───*
+    const helpText = `*──「 TAGBOT INFO」──*
 
 _Ce plugin permet au bot de répondre automatiquement avec une vidéo lorsqu'il est mentionné ou quand tout le monde est tagué dans un groupe._
 
@@ -41,7 +41,7 @@ _Ce plugin permet au bot de répondre automatiquement avec une vidéo lorsqu'il 
 
 *STATUT ACTUEL :* ${isTagBotActive ? '*Activé ✅*' : '*Désactivé ❌*'}
 
-_Note : Pour changer la vidéo, modifiez le lien dans le fichier source du plugin. Mais il faut l'autorisation de Twilight ou Karma _`;
+_Note : Pour changer la vidéo, modifiez le lien dans le fichier source du plugin. Mais il faut l'autorisation de Twilight ou Karma_`;
 
     return await message.sendReply(helpText);
 });

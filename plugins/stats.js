@@ -28,7 +28,7 @@ Module({
         });
 
         const interface_stats = `
-╭────〖 *S T A T S* 〗─────
+╭──〖 *S T A T S* 〗──
 │
 │  📛 *Nom* : \ ${groupName}\
 │
@@ -42,7 +42,7 @@ Module({
 │
 │  👤 *Simples* : \*${totalSimples}\*
 │
-╰───────────────────
+╰───────────
 
 > *Rapport généré par Synapse-X* `.trim();
 

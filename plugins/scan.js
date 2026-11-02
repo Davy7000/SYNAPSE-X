@@ -53,8 +53,8 @@ Module({
         const extractedText = result.ParsedText.trim();
 
         await message.sendReply(
-            `╭───〖 *S C A N  IMAGE* 〗───\n│\n│  📄 *Texte détecté :*\n│\n${extractedText.split('\n').map(l => `│  ${l}`).join('\n')}\n│\n╰─────────────────────
-> ℹ️_Attention le scan automatique peut comporter de légères erreurs selon la netteté de l'image_
+            `╭─〖 *S C A N  IMG* 〗──\n│\n│  📄 *Texte détecté :*\n│\n${extractedText.split('\n').map(l => `│  ${l}`).join('\n')}\n│\n╰──────────
+> _Attention le scan automatique peut comporter de légères erreurs selon la netteté de l'image_
 `
         );
 

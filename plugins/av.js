@@ -66,7 +66,7 @@ Module({
         games.set(groupId, { players: [], started: false });
 
         await message.sendReply(
-            `╭─〖 *A C T I O N  O U  V É R I T É* 〗─\n│\n│  🎮 _Pour participer, envoie ton prénom avec_\n│  \`.av <ton prénom>\`\n│\n│  ⏳ _Inscriptions ouvertes pendant 60 secondes_\n│  👥 _Min : 2 joueurs — Max : 6 joueurs_\n│\n╰─────────────────────`
+            `╭〖 *A C T I O N  O U  V É R I T É* 〗─\n│\n│  🎮 _Pour participer, envoie ton prénom avec_\n│  \`.av <ton prénom>\`\n│\n│  ⏳ _Inscriptions ouvertes pendant 60 secondes_\n│  👥 _Min : 2 joueurs — Max : 6 joueurs_\n│\n╰───────────`
         );
 
         setTimeout(async () => {
@@ -82,7 +82,7 @@ Module({
             game.currentIndex = 0;
 
             await message.sendReply(
-                `╭───〖 *J O U E U R S* 〗───\n│\n${game.players.map((p, i) => `│  ${i + 1}. ${p.name}`).join('\n')}\n│\n╰─────────────────────\n\n_Le jeu commence ! Tape_ \`.av next\` _pour lancer le premier tour._`
+                `╭─〖 *J O U E U R S* 〗─\n│\n${game.players.map((p, i) => `│  ${i + 1}. ${p.name}`).join('\n')}\n│\n╰────────────\n\n_Le jeu commence ! Tape_ \`.av next\` _pour lancer le premier tour._`
             );
         }, 60000);
 
@@ -100,7 +100,7 @@ Module({
         const item = list[Math.floor(Math.random() * list.length)];
 
         await message.sendReply(
-            `╭───〖 *${isTruth ? '🗣️ VÉRITÉ' : '🔥 ACTION'}* 〗───\n│\n│  👤 *${player.name}*, à toi !\n│\n│  ${item}\n│\n╰─────────────────────\n\n_Tape_ \`.av next\` _pour le tour suivant._`
+            `╭───〖 *${isTruth ? '🗣️ VÉRITÉ' : '🔥 ACTION'}* 〗───\n│\n│  👤 *${player.name}*, à toi !\n│\n│  ${item}\n│\n╰───────────\n\n_Tape_ \`.av next\` _pour le tour suivant._`
         );
 
         game.currentIndex++;
@@ -115,7 +115,7 @@ Module({
 
     if (!game || game.started) {
         return message.sendReply(
-            `╭─〖 *A C T I O N  O U  V É R I T É* 〗─\n│\n│  \`.av start\` — _Démarrer une partie_\n│  \`.av <prénom>\` — _Rejoindre (pendant l'inscription)_\n│  \`.av next\` — _Tour suivant_\n│  \`.av stop\` — _Arrêter la partie_\n│\n╰─────────────────────`
+            `╭─〖 *A C T I O N  O U  V É R I T É* 〗─\n│\n│  \`.av start\` — _Démarrer une partie_\n│  \`.av <prénom>\` — _Rejoindre (pendant l'inscription)_\n│  \`.av next\` — _Tour suivant_\n│  \`.av stop\` — _Arrêter la partie_\n│\n╰───────────`
         );
     }
 

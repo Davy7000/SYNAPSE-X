@@ -27,7 +27,11 @@ const citations = [
     { text: "Le futur appartient à ceux qui croient à la beauté de leurs rêves.", author: "Eleanor Roosevelt" },
     { text: "On ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux.", author: "Antoine de Saint-Exupéry" },
     { text: "La folie, c'est de faire toujours la même chose et de s'attendre à un résultat différent.", author: "Albert Einstein" },
-    { text: "Ils ne savaient pas que c'était impossible, alors ils l'ont fait.", author: "Mark Twain" }
+    { text: "Ils ne savaient pas que c'était impossible, alors ils l'ont fait.", author: "Mark Twain" },
+    { text: "Le succès n'est pas la clé du bonheur. Le bonheur est la clé du succès.", author: "Albert Schweitzer" },
+    { text: "La vie est un défi à relever, un bonheur à mériter, une aventure à tenter.", author: "Mère Teresa" },
+    { text: "Le plus grand risque est de ne prendre aucun risque.", author: "Mark Zuckerberg" },
+    { text: "La vie est courte, et c'est à vous de la rendre douce.", author: "Sarah Louise Delany" }
 ];
 
 Module({
@@ -43,9 +47,8 @@ Module({
         const quoteObj = citations[Math.floor(Math.random() * citations.length)];
 
         // Design moderne et épuré
-        const quoteCard = 
-            `
-             💬*« ${quoteObj.text} »*\n\n\n` +
+        const quoteCard =
+            `💬*« ${quoteObj.text} »*\n\n\n` +
             `✍️ *Auteur :* _${quoteObj.author}_`;
 
         await message.sendReply(quoteCard);

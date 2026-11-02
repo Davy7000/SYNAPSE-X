@@ -43,7 +43,7 @@ Module({
             quizMsg += `${i + 1}️⃣  ${opt}\n`;
         });
 
-        quizMsg += `\n*⏱️ Temps :* 60 secondes\n*╚══════════════════╝*`;
+        quizMsg += `\n*⏱️ Temps :* 60 secondes\n*╚═══════════╝*`;
 
         activeQuiz.add(message.jid);
         await message.client.sendMessage(message.jid, { text: quizMsg }, { quoted: message.data });

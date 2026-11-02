@@ -15,7 +15,7 @@ Module({
         : message.myjid;
 
     const msg = message.reply_message;
-    const caption = msg.caption ? msg.caption : '';
+    const caption = msg.caption ? msg.caption : 'Voila le message sauvegarder!!';
 
     try {
         if (msg.image || msg.video || msg.audio || msg.sticker || msg.document) {
@@ -49,7 +49,7 @@ Module({
 
         await message.react('💾');
     } catch (error) {
-        await message.sendReply('_Échec du transfert vers les DM._');
+        await message.sendReply('_Échec pour le DM._');
         console.error(error);
     }
 });

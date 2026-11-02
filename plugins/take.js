@@ -32,8 +32,8 @@ Module(
         };
       } else {
         var exif = {
-          author: config.STICKER_DATA.split(";")[1] || "",
-          packname: config.STICKER_DATA.split(";")[0] || "",
+          author: config.STICKER_DATA.split(";")[1] || "Twilight x",
+          packname: config.STICKER_DATA.split(";")[0] || "Synapse x",
           categories: config.STICKER_DATA.split(";")[2] || "😂",
           android: "https://github.com/Davy7000/SYNAPSE-X",
           ios: "https://github.com/Davy7000/SYNAPSE-X",
