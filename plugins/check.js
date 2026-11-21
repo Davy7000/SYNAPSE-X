@@ -193,7 +193,7 @@ Module({
     pattern: 'check ?(.*)',
     fromMe: true,
     desc: 'Check which country a phone code belongs to',
-    type: 'misc'
+    use: 'misc'
 }, async (message, match) => {
     try {
         const input = match[1].trim();

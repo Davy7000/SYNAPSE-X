@@ -5,7 +5,7 @@
 const legacyBool = (raw) => raw === "true" || raw === "on";
 
 const entries = {
-  ALIVE: { type: "string", default: "_I am alive! (use .setalive help for custom alive msg)_" },
+  ALIVE: { type: "string", default: "_Ah boos je fonctionne je sais pas tu cherche quoi_" },
   BLOCK_CHAT: { type: "string", default: "" },
   // bool, but the default has always been the empty string
   PM_ANTISPAM: { type: "bool", default: "" },

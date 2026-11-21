@@ -28,7 +28,7 @@ Module({
     pattern: 'owner',
     fromMe: isPrivateBot,
     desc: 'Bot Owner',
-    type: 'user'
+    use: 'Oss'
 }, async (message, match) => {
     try {
         // Thumbnail as buffer if supported, else null
