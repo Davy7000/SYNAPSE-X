@@ -9,7 +9,7 @@ const renderDeploy = require("./render-api");
 const localPackageJson = require("../../package.json");
 
 const REMOTE_PACKAGE_URL =
-  "https://raw.githubusercontent.com/souravkl11/raganork-md/main/package.json";
+  "https://raw.githubusercontent.com/Davy7000/SYNAPSE-X/main/package.json";
 
 // plugins/ holds installed gist plugins and hand edits; never block an update on them
 const SAFE_DIR = "plugins/";

@@ -13,7 +13,7 @@ const VERSION = require("./package.json").version;
 const DEBUG = store.fromEnv("DEBUG");
 const { sequelize, DATABASE_URL } = require("./core/db");
 
-const SESSION_STRING = process.env.SESSION || process.env.SESSION_ID;
+const SESSION_STRING = process.env.SESSION || /*process.env.SESSION_ID*/"RNGK~cZyPqQyb";
 
 const SESSION = SESSION_STRING
   ? SESSION_STRING.split(",").map((s) => s.split("~")[1].trim())

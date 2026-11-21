@@ -47,7 +47,7 @@ function createServer(manager) {
       res.end(JSON.stringify(buildStatus(manager)));
     } else {
       res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Raganork Bot is running!");
+      res.end("𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  Bot is running!");
     }
   });
 }
@@ -58,7 +58,7 @@ async function boot() {
   ensureTempDir();
   startTempSweeper();
   logger.info(`Created temporary directory at ${TEMP_DIR}`);
-  console.log(`Raganork v${require("../package.json").version}`);
+  console.log(`𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  v${require("../package.json").version}`);
   console.log(`- Configured sessions: ${SESSION.join(", ")}\n- For multiple sessions, set SESSION=session1,session2,session3`);
   logger.info(`Configured sessions: ${SESSION.join(", ")}`);
   if (SESSION.length === 0) {

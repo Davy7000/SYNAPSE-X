@@ -1,11 +1,11 @@
 {
-  "name": "raganork-md",
+  "name": "SYNAPSE-X",
   "version": "7.3.31",
   "description": "A multi functional wa bot.",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "pm2 start index.js --name raganork-md --attach --node-args=\"--max-old-space-size=${MAX_HEAP:-512}\"",
+    "start": "pm2 start index.js --name SYNAPSE-X --attach --node-args=\"--max-old-space-size=${MAX_HEAP:-512}\"",
     "test": "node --test --test-force-exit test/*.test.js",
     "test:syntax": "bash scripts/quick-test.sh"
   },
@@ -13,9 +13,9 @@
     "whatsapp",
     "bot",
     "baileys",
-    "raganork"
+    "SYNAPSE-X"
   ],
-  "author": "Sourav K",
+  "author": "Twilight X",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.1",

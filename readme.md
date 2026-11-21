@@ -1,206 +1,187 @@
-# Raganork-MD
+<div align="center">
+
+# ⚡ SYNAPSE-X BOT⚡
 
 <p align="center">
-  <a href="https://raganork.site">
-    <img src="https://i.ibb.co/QL4BQQ6/Untitled-1.png" alt="Get Session" width="300"/>
-  </a>
+  <img src="https://img.shields.io/github/stars/Davy7000/SYNAPSE-X?style=for-the-badge&color=ff3e3e&logo=github" alt="Stars"/>
+  <img src="https://img.shields.io/github/forks/Davy7000/SYNAPSE-X?style=for-the-badge&color=22c55e&logo=git" alt="Forks"/>
+  <img src="https://img.shields.io/github/license/Davy7000/SYNAPSE-X?style=for-the-badge&color=3b82f6" alt="License"/>
+  <img src="https://img.shields.io/badge/Language-JavaScript-f7df1e?style=for-the-badge&logo=javascript&logoColor=black" alt="JS"/>
 </p>
 
-A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Raganork project for better stability and performance.
-
-## Get Started
-
-#### 1. Get Your Session String
-
-<p align="center">
-  <a href="https://raganork.site">
-    <img src="https://i.ibb.co/fVWcycPc/get-session.png" alt="Get Session" width="200"/>
-  </a>
-</p>
-
-**Important for Cloud Deployments:** If you're deploying on platforms like Render, Koyeb, Railway, or similar cloud services, you'll need a `DATABASE_URL` (PostgreSQL) for persistent storage. VPS deployments can use local file storage.
-
-#### 2. Deploy and setup your bot
-
-<p align="center">
-  <a href="https://raganork.site">
-    <img src="https://i.ibb.co/fVsfPsjk/deploy-bot.png" alt="Get Session" width="200"/>
-  </a>
-</p>
-
-## Features
-
-- Lightweight and fast performance
-- Single and multi-session capabilities
-- Extensive plugin system
-- Group management tools
-- Media download functionality
-- Excellent caching and session management
-
-## Prerequisites
-
-- Node.js (version 24 or higher)
-- Git
-- FFmpeg
-- Yarn package manager
-- PM2 (for process management)
-- Database URL (postgreSQL - for cloud deployments)
-
-## Installation
-
-### Clone Repository
-
-```bash
-npm install -g yarn pm2
-git clone https://github.com/souravkl11/raganork-md.git
-cd raganork-md
-```
-
-### Install Dependencies
-
-```bash
-yarn install
-```
-
-### Configuration
-
-Create a `config.env` file in the root directory (on hosting platforms, set the same names as environment variables):
-
-#### Session Configuration
-
-Single session:
-
-```
-SESSION=RGNK~d7a5s66
-```
-
-Multi-session:
-
-```
-SESSION=RGNK~d7a5s66,RGNK~7ad8cW
-```
-
-#### Required Variables
-
-```
-# Bot Configuration
-BOT_NAME=Your Bot Name
-HANDLERS=.,!
-SUDO=919876543210
-
-# Database (Required for cloud platforms)
-DATABASE_URL=your_database_url
-
-# Localization
-LANGUAGE=en
-TZ=Asia/Kolkata
-```
-
-## Running the Bot
-
-```bash
-npm start
-```
-
-## Process Management
-
-```bash
-# Stop bot
-pm2 stop raganork-md
-
-# Restart bot
-pm2 restart raganork-md
-```
-
-## Performance Tuning (optional)
-
-```
-MAX_HEAP=512              # V8 heap cap in MB used by npm start (lower = earlier GC, less RAM)
-FFMPEG_CONCURRENCY=2      # max ffmpeg jobs at once
-FFMPEG_TIMEOUT=600        # seconds before a stuck ffmpeg job is killed
-MAX_RECONNECT_ATTEMPTS=10 # fast reconnects (with backoff) before switching to one retry every ~10 min
-CMD_CONCURRENCY=8         # chats that may run a command at the same time (commands of one chat run in order)
-CMD_TIMEOUT=300           # seconds before a running command stops holding its queue slot (it is not killed)
-LOG_LEVEL=warn            # bot log level (silent|error|warn|info|debug), default warn
-BAILEYS_LOG_LEVEL=silent  # WhatsApp library log level, separate from LOG_LEVEL, default silent
-SELF_RESTART=false        # without pm2 or a hosting platform, true makes .restart/.update start a new copy itself
-WA_VERSION=2.3000.x       # pin a WhatsApp web version (default: latest published)
-```
-
-#### Other optional settings
-
-```
-DATABASE_SSL=true         # set false for a PostgreSQL server without SSL (default true)
-SQLITE_PATH=./bot.db      # where the SQLite file lives when DATABASE_URL is not set
-PLUGIN_FETCH_TIMEOUT=15000 # milliseconds to wait for each `.install`ed plugin download at start
-TEMP_DIR=temp             # folder for temporary files (default: a raganork folder in the system temp dir)
-USE_SERVER=true           # set false to skip the built-in web server (health and status pages)
-PORT=3000                 # port of that web server
-RENDER_API_KEY=           # Render only: lets `.update` redeploy the service
-```
-
-Use `.mem` to see the bot's memory usage. On container platforms where every MB counts, running `node --max-old-space-size=384 index.js` directly instead of `npm start` skips the PM2 daemon (~50-70 MB).
-
-## Health and status
-
-The built-in web server answers on `PORT`:
-
-- `/health` always returns `OK` (liveness probe for hosting platforms).
-- `/status` returns JSON with each session's state (`connected`, `lastOpenAt`, `reconnectAttempts`, `loggedOut`), uptime, memory and the message queue length. It shows no phone numbers and no session ids.
-
-## Commands
-
-Default prefix: `.`
-
-- `.list` – Show available commands
-- `.ping` – Check response time
-- `.restart` – Restart bot (sudo only)
-- `.shutdown` – Stop bot (sudo only)
-- `.mem` – Show memory usage (sudo only)
-
-## File Structure
-
-```
-raganork-md/
-├── plugins/          # Bot commands, one file each (also where `.install` puts plugins)
-│   ├── utils/        # Helpers plugins share (media, downloads, language files)
-│   └── sql/          # Plugin installer table
-├── core/             # Everything the plugins run on
-│   ├── app.js        # Boot sequence and the /health and /status server
-│   ├── handler.js    # Entry point for incoming messages
-│   ├── pipeline/     # Message pipeline: middleware (antibot, antispam, filters, ...) and the command dispatcher
-│   ├── session/      # One WhatsApp session: socket, reconnects, manager, features (albums, anti-delete, calls)
-│   ├── plugins/      # Command registry and plugin loader
-│   ├── db/           # Sequelize setup, models and per-session scoping
-│   ├── config/       # Typed settings: schema, store, derived values
-│   ├── services/     # Updater and the Render API client
-│   ├── constructors/ # Message objects handed to plugins
-│   └── private.js    # Private service layer (obfuscated on deploy)
-├── config.js         # Settings object plugins read (config.X)
-├── main.js           # Module() and commands, for plugins
-├── index.js          # Main entry point
-├── temp/             # Temporary files (when TEMP_DIR=temp)
-└── package.json      # Dependencies
-```
-
-## Support
-
-- [Telegram Group](https://t.me/raganork_in)
-- [Official Website](https://raganork.site)
-
-## Legal Notice
-
-⚠️ **Use at your own risk.** This bot uses unofficial WhatsApp Web API methods and may result in temporary or permanent account bans.
-
-- This code is in no way affiliated, authorized, maintained, sponsored or endorsed by WhatsApp or any of its affiliates.
-- WhatsApp is a trademark of WhatsApp Inc., registered in the U.S. and other countries.
-- This software is provided for educational and research purposes only
-- Powered by [Baileys](https://github.com/WhiskeySockets/Baileys)
-
-## License
-
-GPL License - See LICENSE file for details.
+A lightweight WhatsApp bot framework with multi-session support and extensive configuration options. Complete rewrite of the original Synapse project for better stability and performance.
 
 ---
 
-**Note:** `core/private.js` is obfuscated because it contains the maintainer's private backend endpoints and keys. Everything else is regular source.
+<a href="https://files.catbox.moe/yy99ny.jpg">
+  <img src="https://files.catbox.moe/yy99ny.jpg" alt="menu" border="0" width="700" style="border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);"/>
+</a>
+
+</div>
+
+## 🚀 Get Started
+
+### 1. Get Your Session String
+
+<p align="center">
+  <a href="https://ossynapse.netlify.app/" target="_blank">
+    <img src="https://i.ibb.co/fVWcycPc/get-session.png" alt="Get Session" width="220" style="transition: transform .2s; cursor: pointer;"/>
+  </a>
+</p>
+
+> ⚠️ **ant for Cloud Deployments:** If you're deploying on platforms like **Render, Koyeb, Railway**, or similar cloud services, you'll need a `DATABASE_URL` (PostgreSQL) for persistent storage. VPS deployments can use local file storage.
+
+### 2. Deploy and Setup Your Bot
+
+<p align="center">
+  <a href="https://ossynapse.netlify.app/" target="_blank">
+    <img src="https://i.ibb.co/fVsfPsjk/deploy-bot.png" alt="Deploy Bot" width="220" style="transition: transform .2s; cursor: pointer;"/>
+  </a>
+</p>
+
+---
+
+## ✨ Features
+
+- 🚀 **Lightweight & Fast** – Optimized core engine for instant responses.
+- 👥 **Multi-Session Support** – Run single or multiple sessions simultaneously.
+- 🔌 **Plugin System** – Modular system to add or remove features easily.
+- 🛡️ **Group Administration** – Complete set of tools to manage your groups.
+- 📥 **Media Downloader** – Download videos, audios, and documents instantly.
+- 💾 **Advanced Caching** – Smart session management to prevent bans.
+
+---
+
+## 🛠️ Prerequisites
+
+Make sure you have the following installed on your system or server:
+
+- **Node.js** (v20 or higher)
+- **Git**
+- **FFmpeg**
+- **Yarn** package manager
+- **PM2** (for 24/7 background process management)
+
+---
+
+## 📦 Installation & Setup
+
+### 1. Clone Repository
+
+```bash
+sudo npm install -g yarn pm2
+git clone https://github.com/Davy7000/SYNAPSE-X.git
+cd SYNAPSE-X
+
+```
+
+### 2. Install Dependencies
+
+```bash
+yarn install
+
+```
+
+### 3. Configuration
+
+Create a `.env` file in the root directory of the project:
+
+#### 📊 Session Options
+
+```env
+# Single Session Mode
+SESSION="RGNK~d7a5s66"
+
+# Multi-Session Mode (Separate keys with commas)
+SESSION="RGNK~d7a5s66,RGNK~7ad8cW"
+
+```
+
+```env
+#copy and paste this selection into your raw editor
+
+SESSION="RGNK~d7a5s66"
+HANDLERS="!"
+SUDO="242050336960"
+LANGUAGE="en"
+USE_SERVER="true"
+GEMINI_API_KEY=
+CMD_REACTION="true"
+READ_MESSAGES="false"
+ALWAYS_ONLINE="false"
+DATABASE_URL=""
+```
+
+#### ⚙️ Environment Variables Layout
+
+| Variable         | Description                                      | Default / Example          |
+| ---------------- | ------------------------------------------------ | -------------------------- |
+| `SESSION`        | Your unique Synapse session string               | `"your session"`           |
+| `HANDLERS`       | Prefix trigger for bot commands                  | `!`                        |
+| `SUDO`           | Numbers authorized to control admin actions      | `242050336960`             |
+| `LANGUAGE`       | Language pack for bot responses                  | `en,fr,ch`                 |
+| `USE_SERVER`     | Enable/Disable web server interface              | `true or false`            |
+| `GEMINI_API_KEY` | Your Google AI Gemini Token                      | `"your api key here"`      |
+| `CMD_REACTION`   | React with emojis when running a command         | `true or false`            |
+| `READ_MESSAGES`  | Automatically mark incoming messages as read     | `false or true`            |
+| `ALWAYS_ONLINE`  | Keep WhatsApp status badge always green          | `false or true`            |
+| `DATABASE_URL`   | PostgreSQL link (Required for Cloud deployments) | `"link of your data base"` |
+
+---
+
+## 🎮 Running & Managing the Bot
+
+### Start the Bot
+
+```bash
+npm start
+
+```
+
+### PM2 Process Controls
+
+```bash
+# Stop background process
+pm2 stop SYNAPSE-X
+
+# Restart background process
+pm2 restart SYNAPSE-X
+
+```
+
+---
+
+## 📜 Standard Commands Reference
+
+> 💡 _Default prefix is set via `HANDLERS` value._
+
+- `!list` – Show all available commands in an interactive list.
+- `!ping` – Check server response latency.
+- `!restart` – Safely restart the daemon process _(Sudo Only)_.
+- `!shutdown` – Turn off the framework instance _(Sudo Only)_.
+- `!owner` – Sends the owner's digital vCard contact profile.
+
+---
+
+## 📁 File Structure Matrix
+
+```text
+SYNAPSE-X/
+├── plugins/     # Custom plugins & command features (AI, Games, Moderation)
+├── core/        # Core framework loaders and handlers
+├── output/      # Generated multimedia outputs
+├── temp/        # Volatile workspace temporary files
+├── config.js    # Global environment config compiler
+├── index.js     # Main engine entry point script
+└── package.json # Project dependency map
+
+```
+
+---
+
+## ⚖️ License & Credits
+
+- This project is licensed under the **GPL License** - See the `LICENSE` file for details.
+- Powered by [𝑻𝒘𝒊𝒍𝒊𝒈𝒉𝒕_𝑲𝒊𝒏𝒈☯❥ & K A R M A ³₆⁹ 모](https://www.google.com/search?q=)
+
+_Note: Enjoy your life with us! 🚀_

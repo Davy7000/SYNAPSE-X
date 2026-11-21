@@ -11,13 +11,15 @@ function capitalizeFirstLetter(s) {
 
 // same rule as registry.helpPrefix, but for the config passed in
 const prefixOf = (cfg) =>
-  cfg.HANDLERS && cfg.HANDLERS !== "false" ? String(cfg.HANDLERS).charAt(0) : "";
+  cfg.HANDLERS && cfg.HANDLERS !== "false"
+    ? String(cfg.HANDLERS).charAt(0)
+    : "";
 
 // short on purpose: every option lives in .settings
 function buildStartMessage(config) {
   const p = prefixOf(config);
   return (
-    `*_Raganork started!_*\n\n` +
+    `*_𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  started!_*\n\n` +
     `_Version:_ *v${version}*\n` +
     `_Mode:_ *${capitalizeFirstLetter(config.MODE || "private")}*\n` +
     `_Language:_ *${capitalizeFirstLetter(config.LANGUAGE || "english")}*\n` +

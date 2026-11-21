@@ -1,24 +1,28 @@
 const { commands, Module } = require("../main");
-const { VERSION } = require("../config");
+const { MODE, HANDLERS, ALIVE, VERSION } = require("../config");
 const config = require("../config");
-const { helpPrefix, commandName } = require("../core/plugins/registry");
 const os = require("os");
 const path = require("path");
 const fs = require("fs");
 const { uploadToImgbb } = require("./utils/upload");
-const { bytesToSize } = require("./utils/misc");
 const { setVar } = require("./manage");
 const { getTotalUserCount } = require("../core/store");
 const { parseAliveMessage, sendAliveMessage } = require("./utils/alive-parser");
 
+const isPrivateMode = MODE === "private";
 
-const retrieveCommandDetails = (name) => {
+const extractCommandName = (pattern) => {
+  const match = pattern?.toString().match(/(\W*)([A-Za-z1234567890 ]*)/);
+  return match && match[2] ? match[2].trim() : "";
+};
+
+const retrieveCommandDetails = (commandName) => {
   const foundCommand = commands.find(
-    (cmd) => cmd.pattern && commandName(cmd) === name.toLowerCase()
+    (cmd) => extractCommandName(cmd.pattern) === commandName
   );
   if (!foundCommand) return null;
   return {
-    name: name.toLowerCase(),
+    name: commandName,
     ...foundCommand,
   };
 };
@@ -26,20 +30,21 @@ const retrieveCommandDetails = (name) => {
 Module(
   {
     pattern: "info ?(.*)",
+    fromMe: isPrivateMode,
     desc: "Gives command information",
   },
   async (message, args) => {
-    const requested = args[1]?.trim();
-    if (!requested) {
+    const commandName = args[1]?.trim();
+    if (!commandName) {
       return await message.sendReply(
-        `_Please provide a command name. Example: ${helpPrefix()}info insta_`
+        "_Please provide a command name. Example: .info insta_"
       );
     }
 
-    const commandDetails = retrieveCommandDetails(requested);
+    const commandDetails = retrieveCommandDetails(commandName);
     if (!commandDetails) {
       return await message.sendReply(
-        `_Command '${requested}' not found. Please check the spelling._`
+        `_Command '${commandName}' not found. Please check the spelling._`
       );
     }
 
@@ -51,7 +56,7 @@ Module(
     }\n`;
     if (commandDetails.use) infoMessage += `• *Type:* ${commandDetails.use}\n`;
     if (commandDetails.usage)
-      infoMessage += `• *Usage:* ${helpPrefix()}${commandDetails.name} ${commandDetails.usage}\n`;
+      infoMessage += `• *Usage:* ${commandDetails.name} ${commandDetails.usage}\n`;
     if (commandDetails.warn)
       infoMessage += `• *Warning:* ${commandDetails.warn}\n`;
 
@@ -62,6 +67,7 @@ Module(
 Module(
   {
     pattern: "list ?(.*)",
+    fromMe: isPrivateMode,
     excludeFromCommands: true,
   },
   async (message, args) => {
@@ -76,10 +82,10 @@ Module(
       if (!categorizedCommands[category]) {
         categorizedCommands[category] = [];
       }
-      const name = commandName(cmd);
-      if (name) {
+      const commandName = extractCommandName(cmd.pattern);
+      if (commandName) {
         categorizedCommands[category].push({
-          name,
+          name: commandName,
           desc: cmd.desc,
           usage: cmd.usage,
           warn: cmd.warn,
@@ -88,7 +94,7 @@ Module(
     });
 
     let responseMessage = `*Total Available Commands: ${totalCommandCount}*\n\n`;
-    const handlerPrefix = helpPrefix();
+    const handlerPrefix = HANDLERS.match(/\[(\W*)\]/)?.[1]?.[0] || "!";
 
     for (const category in categorizedCommands) {
       responseMessage += `*───「 ${category.toUpperCase()} 」───*\n\n`;
@@ -103,6 +109,21 @@ Module(
     await message.sendReply(responseMessage);
   }
 );
+
+function bytesToSize(bytes) {
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  if (bytes === 0) return "0 Byte";
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 async function parseAlive(message, aliveMessage) {
   if (!aliveMessage) {
@@ -122,13 +143,22 @@ async function parseAlive(message, aliveMessage) {
   }
 }
 
+const manage = {
+  setVar: async (key, value, message) => {
+    await message.sendReply(
+      `_Attempted to set ${key} to ${value}. (Note: This is a placeholder and doesn't persist changes in this demo)_`
+    );
+  },
+};
+
 Module(
   {
     pattern: "alive",
+    fromMe: isPrivateMode,
     desc: "Checks if the bot is alive.",
   },
   async (message, match) => {
-    await parseAlive(message, config.ALIVE);
+    await parseAlive(message, ALIVE);
   }
 );
 
@@ -139,26 +169,26 @@ Module(
     desc: "Sets the alive message for the bot with formatting options.",
     usage:
       ".setalive <message> (with placeholders)\n.setalive help (show formatting help)",
-    excludeFromCommands: true,
+    dontAddCommandList: true,
   },
   async (message, match) => {
     if (!match[1]) {
       return await message.sendReply(`*Alive Message Setup*
 
 *Usage:*
-• \`${helpPrefix()}setalive <message>\` - Set alive message
-• \`${helpPrefix()}setalive help\` - Show detailed formatting help
-• \`${helpPrefix()}setalive get\` - View current alive message
-• \`${helpPrefix()}setalive del\` - Delete custom alive message
-• \`${helpPrefix()}testalive\` - Test current alive message
+• \`.setalive <message>\` - Set alive message
+• \`.setalive help\` - Show detailed formatting help
+• \`.setalive get\` - View current alive message
+• \`.setalive del\` - Delete custom alive message
+• \`.testalive\` - Test current alive message
 
 *Quick Example:*
-\`${helpPrefix()}setalive Hey $user! $botname is online!
+\`.setalive Hey $user! $botname is online!
 _Version: $version_
 _Uptime: $uptime_
 _Users: $users_ $pp\`
 
-*Use \`${helpPrefix()}setalive help\` for all available placeholders.*`);
+*Use \`.setalive help\` for all available placeholders.*`);
     }
 
     const input = match[1].toLowerCase();
@@ -224,14 +254,14 @@ _Hi $user!_
     }
 
     if (input === "get") {
-      const current = config.ALIVE;
+      const current = ALIVE;
       if (!current) {
         return await message.sendReply(
           "_No custom alive message set! Using default message._"
         );
       }
       return await message.sendReply(
-        `*Current Alive Message:*\n\n${current}\n\n_Tip: Use_ \`${helpPrefix()}testalive\` _to test your message!_`
+        `*Current Alive Message:*\n\n${current}\n\n_Tip: Use_ \`.testalive\` _to test your message!_`
       );
     }
 
@@ -251,7 +281,7 @@ _Hi $user!_
 
     await setVar("ALIVE", aliveMessage);
     return await message.sendReply(
-      `_Alive message set successfully!_\n\n*Preview:*\n${aliveMessage}\n\n_Tip: Use_ \`${helpPrefix()}testalive\` _to test your message!_`
+      `_Alive message set successfully!_\n\n*Preview:*\n${aliveMessage}\n\n_Tip: Use_ \`.testalive\` _to test your message!_`
     );
   }
 );
@@ -259,13 +289,18 @@ _Hi $user!_
 Module(
   {
     pattern: "menu",
+    fromMe: isPrivateMode,
     use: "utility",
     desc: "Displays the bot command menu.",
   },
   async (message, match) => {
-    const stars = ["✦", "✯", "✯", "✰", "◬"];
+    const stars = ["❃","♛","모"];
     const star = stars[Math.floor(Math.random() * stars.length)];
 
+    let use_ = commands.map((e) => e.use);
+    const others = (use) => {
+      return use === "" ? "others" : use;
+    };
     let types = [
       ...new Set(
         commands.filter((e) => e.pattern).map((e) => e.use || "General")
@@ -276,74 +311,68 @@ Module(
     for (const command of commands) {
       let type_det = command.use || "General";
       if (!cmd_obj[type_det]?.length) cmd_obj[type_det] = [];
-      let cmd_name = commandName(command);
+      let cmd_name = extractCommandName(command.pattern);
       if (cmd_name) cmd_obj[type_det].push(cmd_name);
     }
 
     let final = "";
     let i = 0;
-    const handlerPrefix = helpPrefix();
+    const handlerPrefix = HANDLERS !== "false" ? HANDLERS.split("")[0] : "";
     for (const n of types) {
       for (const x of cmd_obj[n]) {
         i = i + 1;
         const newn = n.charAt(0).toUpperCase() + n.slice(1);
         final += `${
-          final.includes(newn) ? "" : "\n\n╭════〘 *_`" + newn + "`_* 〙════⊷❍"
-        }\n┃${star}│ _\`${i}.\` ${handlerPrefix}${x.trim()}_${
+          final.includes(newn) ? "" : "\n\n╭═〘 " + newn + " 〙═⊷❍"
+        }\n┃${star}│ ${i} ❯ ${handlerPrefix}${x.trim()}  ${
           cmd_obj[n]?.indexOf(x) === cmd_obj[n]?.length - 1
-            ? `\n┃${star}╰─────────────────❍\n╰══════════════════⊷❍`
+            ? `\n┃${star}╰───────────────\n╰───────────────`
             : ""
         }`;
       }
     }
-
+    let oss = 'OSS COMPAGNY';
     let cmdmenu = final.trim();
     const used = bytesToSize(os.freemem());
     const total = bytesToSize(os.totalmem());
     const totalUsers = await getTotalUserCount();
     const infoParts = config.BOT_INFO.split(";");
     const botName = infoParts[0] || "My Bot";
-    const botOwner = infoParts[1] || "N/A";
+    const botOwner = "TWILIGHT모";
     const botVersion = VERSION;
-    let botImageLink = infoParts[2] || "";
-    if (botImageLink === "default") {
-      botImageLink = path.join(__dirname, "utils", "images", "default.png");
-    }
 
-    const menu = `╭═══〘 \`${botName}\` 〙═══⊷❍
+    const videoPath = path.join(__dirname, "utils/images/video.mp4");
+
+    // Bloc monospace (```...```): en police à chasse fixe, chaque
+    // caractère occupe la même largeur, donc les box-drawing (╭ │ ╰ ─)
+    // s'alignent verticalement de la même façon sur tous les appareils.
+    // Les *astérisques* ne mettent PAS en gras à l'intérieur d'un bloc
+    // monospace WhatsApp — ils ont donc été retirés ici.
+    const rawMenu = `╭═〘${botName}〙═⊷❍
 ┃${star}╭──────────────
-┃${star}│
-┃${star}│ _*\`Owner\`*_ : ${botOwner}
-┃${star}│ _*\`User\`*_ : ${(message.senderName || "").replace(/[\r\n]+/gm, "")}
-┃${star}│ _*\`Mode\`*_ : ${config.MODE}
-┃${star}│ _*\`Server\`*_ : ${os.platform() === "linux" ? "Linux" : "Unknown OS"}
-┃${star}│ _*\`Available RAM\`*_ : ${used} of ${total}
-┃${star}│ _*\`Total Users\`*_ : ${totalUsers}
-┃${star}│ _*\`Version\`*_ : ${botVersion}
-┃${star}│
-┃${star}│
-┃${star}│  ▎▍▌▌▉▏▎▌▉▐▏▌▎
-┃${star}│  ▎▍▌▌▉▏▎▌▉▐▏▌▎
-┃${star}│   ${botName}
-┃${star}│
+┃${star}│prefix : ${handlerPrefix}
+┃${star}│plugins : ${i}
+┃${star}│Owner : ${botOwner}
+┃${star}│User : ${message.senderName.replace(/[\r\n]+/gm, "")}
+┃${star}│Mode : ${MODE}
+┃${star}│Server : ${os.platform() === "linux" ? "Heroku" : "Unknown OS"}
+┃${star}│RAM : ${used} of ${total}
+┃${star}│Total Users : ${totalUsers}
+┃${star}│Version : ${botVersion}
 ┃${star}╰───────────────
 ╰═════════════════⊷
+${cmdmenu}
 
-${cmdmenu}`;
+• un projet de ${oss}`;
+
+    const menu = "```" + rawMenu + "```";
+
     try {
-      if (
-        botImageLink === path.join(__dirname, "utils", "images", "default.png")
-      ) {
-        await message.client.sendMessage(message.jid, {
-          image: fs.readFileSync(botImageLink),
-          caption: menu,
-        });
-      } else {
-        await message.client.sendMessage(message.jid, {
-          image: { url: botImageLink },
-          caption: menu,
-        });
-      }
+      await message.client.sendMessage(message.jid, {
+        video: { url: videoPath },
+        caption: menu,
+        gifPlayback: true
+      });
     } catch (error) {
       console.error("Error sending menu:", error);
       await message.client.sendMessage(message.jid, {
@@ -355,6 +384,7 @@ ${cmdmenu}`;
 Module(
   {
     pattern: "games ?(.*)",
+    fromMe: isPrivateMode,
     desc: "Lists all available games",
   },
   async (message, args) => {
@@ -364,10 +394,10 @@ Module(
     if (!gameCommands.length) {
       return await message.sendReply("_No games are installed._");
     }
-    const handlerPrefix = helpPrefix();
+    const handlerPrefix = HANDLERS.match(/\[(\W*)\]/)?.[1]?.[0] || ".";
     let response = `*───「 Available Games 」───*\n\n`;
     gameCommands.forEach((cmd) => {
-      const name = commandName(cmd);
+      const name = extractCommandName(cmd.pattern);
       if (name) {
         response += `• *Command:* \`${handlerPrefix}${name}\`\n`;
         response += `• *Description:* ${cmd.desc || "N/A"}\n`;
@@ -391,21 +421,21 @@ Module(
   async (message, match) => {
     const infoText = `*───「 Bot Info Configuration 」───*
 
-_Instead of using \`${helpPrefix()}setinfo\`, use these individual commands:_
+_Instead of using \`.setinfo\`, use these individual commands:_
 
 *Bot Name:*
-- Command: \`${helpPrefix()}setname <name>\`
-- Example: \`${helpPrefix()}setname Raganork\`
+- Command: \`.setname <name>\`
+- Example: \`.setname  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모\`
 - Description: _Sets the bot's display name_
 
 *Bot Owner:*
-- Command: \`${helpPrefix()}setowner <owner>\`
-- Example: \`${helpPrefix()}setowner John\`
+- Command: \`.setowner <owner>\`
+- Example: \`.setowner John\`
 - Description: _Sets the bot owner name_
 
 *Bot Image:*
-- Command: \`${helpPrefix()}setimage\`
-- Usage: _Reply to an image with \`${helpPrefix()}setimage\`_
+- Command: \`.setimage\`
+- Usage: _Reply to an image with \`.setimage\`_
 - Description: _Sets the bot's profile image_
 
 *Current Format:*
@@ -414,7 +444,7 @@ _Bot info is stored as: \`name;owner;imagelink\`_
 *Tips:*
 - _Use \`default\` as image to use local default image_
 - _Changes are saved automatically_
-- _Use \`${helpPrefix()}menu\` to see the updated info_`;
+- _Use \`.menu\` to see the updated info_`;
 
     return await message.sendReply(infoText);
   }
@@ -430,7 +460,7 @@ Module(
   async (message, match) => {
     const name = match[1]?.trim();
     if (!name)
-      return await message.sendReply(`_Provide a name: ${helpPrefix()}setname Raganork_`);
+      return await message.sendReply("_Provide a name: .setname  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모_");
     const parts = config.BOT_INFO.split(";");
     parts[0] = name;
     await setVar("BOT_INFO", parts.join(";"));
@@ -450,7 +480,7 @@ Module(
   async (message, match) => {
     const owner = match[1]?.trim();
     if (!owner)
-      return await message.sendReply(`_Provide owner: ${helpPrefix()}setowner OwnerName_`);
+      return await message.sendReply("_Provide owner: .setowner OwnerName_");
     const parts = config.BOT_INFO.split(";");
     parts[1] = owner;
     await setVar("BOT_INFO", parts.join(";"));
@@ -469,7 +499,7 @@ Module(
   },
   async (message, match) => {
     if (!message.reply_message || !message.reply_message.image) {
-      return await message.sendReply(`_Reply to an image with ${helpPrefix()}setimage_`);
+      return await message.sendReply("_Reply to an image with .setimage_");
     }
 
     try {
@@ -511,7 +541,7 @@ Module(
     use: "utility",
   },
   async (message, match) => {
-    const aliveMessage = config.ALIVE;
+    const aliveMessage = ALIVE;
 
     if (!aliveMessage) {
       return await message.sendReply(
@@ -522,36 +552,4 @@ Module(
     await message.sendReply("*Testing Alive Message:*");
     await parseAlive(message, aliveMessage);
   }
-);
-
-Module(
-  {
-    pattern: "mem",
-    fromMe: true,
-    desc: "Show memory usage of the bot process",
-    use: "system",
-  },
-  async (message) => {
-    const mb = (n) => (n / 1024 / 1024).toFixed(1) + " MB";
-    const m = process.memoryUsage();
-    const { CustomAuthState } = require("../core/auth");
-    const sessions = Object.entries(CustomAuthState.getStats())
-      .map(([, s], i) => `  session ${i + 1}: ${s.keys} keys, ${s.pendingWrites} pending`)
-      .join("\n");
-    const handles =
-      typeof process._getActiveHandles === "function"
-        ? process._getActiveHandles().length
-        : "n/a";
-    await message.sendReply(
-      "```" +
-        `rss        : ${mb(m.rss)}\n` +
-        `heap used  : ${mb(m.heapUsed)} / ${mb(m.heapTotal)}\n` +
-        `external   : ${mb(m.external)}\n` +
-        `buffers    : ${mb(m.arrayBuffers)}\n` +
-        `uptime     : ${Math.round(process.uptime() / 60)} min\n` +
-        `handles    : ${handles}\n` +
-        `sessions   :\n${sessions || "  none"}` +
-        "```",
-    );
-  },
 );

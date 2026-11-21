@@ -3,7 +3,11 @@ const config = require("../config");
 const axios = require("axios");
 const { setVar } = require("./manage");
 const { cooldown, accountKey } = require("./utils");
-const { helpPrefix, patternFor, currentHandlerPrefix } = require("../core/plugins/registry");
+const {
+  helpPrefix,
+  patternFor,
+  currentHandlerPrefix,
+} = require("../core/plugins/registry");
 const { parseText } = require("../core/pipeline/normalize");
 const { derived } = require("../core/config/derived");
 const fs = require("fs");
@@ -11,14 +15,15 @@ const fs = require("fs");
 const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
 const DEFAULT_MODEL = "gemma-4-31b-it";
 const DEFAULT_SYSTEM_PROMPT =
-  "You are a helpful AI assistant named Raganork. Be concise, friendly, and informative.";
+  "You are a helpful AI assistant named 𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 . Be concise, friendly, and informative.";
 const REPLY_COOLDOWN_MS = 2000;
 
 const chatContexts = new Map();
 const chatQueues = new Map();
 
 const model = () => config.CHATBOT_MODEL || DEFAULT_MODEL;
-const systemPrompt = () => config.CHATBOT_SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT;
+const systemPrompt = () =>
+  config.CHATBOT_SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT;
 const enabledChats = derived(
   "CHATBOT",
   (raw) =>
@@ -42,10 +47,12 @@ function inOrder(key, job) {
 
 function looksLikeCommand(text) {
   const prefix = currentHandlerPrefix();
-  if (prefix !== "^" && !config.MULTI_HANDLERS && new RegExp(prefix).test(text)) return true;
+  if (prefix !== "^" && !config.MULTI_HANDLERS && new RegExp(prefix).test(text))
+    return true;
   const parsed = parseText(text);
   return commands.some(
-    (cmd) => !cmd.on && cmd.pattern !== undefined && patternFor(cmd).test(parsed),
+    (cmd) =>
+      !cmd.on && cmd.pattern !== undefined && patternFor(cmd).test(parsed),
   );
 }
 

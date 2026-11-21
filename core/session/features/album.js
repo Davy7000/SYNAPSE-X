@@ -7,7 +7,8 @@ const { getBuffer } = require("../../net");
 const { getAlbumMessages } = require("./album-lookup");
 
 async function albumMessage(bot, jid, array, quoted) {
-  const { generateWAMessage, generateWAMessageFromContent } = await loadBaileys();
+  const { generateWAMessage, generateWAMessageFromContent } =
+    await loadBaileys();
   const processMedia = async (media) => {
     if (typeof media === "string") {
       if (media.startsWith("http://") || media.startsWith("https://")) {
@@ -31,12 +32,10 @@ async function albumMessage(bot, jid, array, quoted) {
         messageSecret: crypto.randomBytes(32),
       },
       albumMessage: {
-        expectedImageCount: array.filter((a) =>
-          a.hasOwnProperty("image"),
-        ).length,
-        expectedVideoCount: array.filter((a) =>
-          a.hasOwnProperty("video"),
-        ).length,
+        expectedImageCount: array.filter((a) => a.hasOwnProperty("image"))
+          .length,
+        expectedVideoCount: array.filter((a) => a.hasOwnProperty("video"))
+          .length,
       },
     },
     {
@@ -84,14 +83,10 @@ async function albumMessage(bot, jid, array, quoted) {
   for (let content of array) {
     const processedContent = { ...content };
     if (processedContent.image) {
-      processedContent.image = await processMedia(
-        processedContent.image,
-      );
+      processedContent.image = await processMedia(processedContent.image);
     }
     if (processedContent.video) {
-      processedContent.video = await processMedia(
-        processedContent.video,
-      );
+      processedContent.video = await processMedia(processedContent.video);
     }
 
     const img = await generateWAMessage(jid, processedContent, {
@@ -126,7 +121,7 @@ async function albumMessage(bot, jid, array, quoted) {
       newsletterName: `WhatsApp`,
       contentType: 1,
       timestamp: new Date().toISOString(),
-      senderName: "Raganork",
+      senderName: "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ",
       content: "Album Message",
       priority: "high",
       status: "sent",
@@ -161,8 +156,7 @@ async function albumMessage(bot, jid, array, quoted) {
     });
 
     try {
-      const botJid =
-        bot.sock.user.id.split(":")[0] + "@s.whatsapp.net";
+      const botJid = bot.sock.user.id.split(":")[0] + "@s.whatsapp.net";
       const albumChildCacheEntry = {
         key: {
           ...img.key,
@@ -174,8 +168,7 @@ async function albumMessage(bot, jid, array, quoted) {
         pushName: null,
       };
 
-      delete albumChildCacheEntry.message
-        .forwardedNewsletterMessageInfo;
+      delete albumChildCacheEntry.message.forwardedNewsletterMessageInfo;
       delete albumChildCacheEntry.message.disappearingMode;
 
       await storeMessage(albumChildCacheEntry);

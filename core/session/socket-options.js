@@ -5,8 +5,16 @@ const { logger, baileysLogger } = config;
 // Android companion by default: the only identity that receives view-once media.
 // WA_BROWSER=chrome keeps the old identity.
 const CHROME_VALUES = new Set(["chrome", "web", "browser"]);
-const isAndroidBrowser = () => !CHROME_VALUES.has(String(config.WA_BROWSER || "").trim().toLowerCase());
-const browserFor = () => (isAndroidBrowser() ? ["13", "Android", ""] : ["Raganork", "Chrome", "1.0.0"]);
+const isAndroidBrowser = () =>
+  !CHROME_VALUES.has(
+    String(config.WA_BROWSER || "")
+      .trim()
+      .toLowerCase(),
+  );
+const browserFor = () =>
+  isAndroidBrowser()
+    ? ["13", "Android", ""]
+    : ["𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ", "Chrome", "1.0.0"];
 
 function buildSocketOptions(bot, version) {
   return {
@@ -62,7 +70,6 @@ function buildSocketOptions(bot, version) {
         messageTimestamp: timestamp,
       };
     },
-  
   };
 }
 

@@ -1,0 +1,140 @@
+const { Module, commands } = require('../main');
+const config = require('../config');
+const fs = require('fs');
+
+console.log("📂 [SYNAPSE-X] Plugin startup.js (Visuel) chargé avec succès !");
+
+Module({
+    on: "start",
+    fromMe: false,
+    desc: "Envoie un rapport système complet avec visuel au démarrage"
+}, async (botContext) => {
+    console.log("🚀 [SYNAPSE-X] Collecte des données et génération du rapport visuel...");
+
+    try {
+        const sock = botContext.client || botContext;
+        const rawId = sock.user?.id || sock.user?.jid;
+        
+        if (!rawId) return;
+        const myJid = rawId.split(':')[0] + '@s.whatsapp.net';
+
+        // 1. Comptage des fichiers de plugins (.js)
+        let totalFiles = 0;
+        try {
+            const files = fs.readdirSync(__dirname);
+            totalFiles = files.filter(file => file.endsWith('.js')).length;
+        } catch (e) {
+            totalFiles = "Indéterminé";
+        }
+
+        // 2. Récupération des autres données
+        const totalCommands = commands.length; 
+        const currentHandler = config.HANDLERS === 'false' ? 'Aucun (Texte brut)' : config.HANDLERS;
+        const botName = sock.user?.name || "user@";
+      
+        // 1. On récupère la valeur exacte de ton config.js (ex: "english" ou "french")
+const rawLang = (config.LANGUAGE || 'english').toLowerCase();
+
+// 2. On configure l'affichage et le drapeau selon ce que contient la variable
+let botLang = 'English';
+let langFlag = '🇬🇧';
+
+if (rawLang.includes('french') || rawLang.includes('fr')) {
+    botLang = 'French';
+    langFlag = '🇫🇷';
+} else if (rawLang.includes('spanish') || rawLang.includes('es')) {
+    botLang = 'Turkish';
+    langFlag = '🇹🇷';
+}
+        //message et lien 
+        const texte = ` ${botName} et merci d'avoir choisi  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 un bot multitâche et facile à déployer.`;
+        // 3. Configuration du texte (qui servira de description à l'image)
+        const bootMessage = `
+╭──⧼ *𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* ⧽──≽
+│┃
+│┃ ❏ *Statut :* _Opérationnel_
+│┃ 
+│┃ ❏ *Modules :* ${totalCommands} commandes
+│┃ 
+│┃ ❏ *Préfixe (Handler) :* ${currentHandler}
+│┃
+│┃ ❏ *Mode :* ${config.MODE || 'Privé'}
+│┃ 
+│┃ ❏ *plugins :* ${totalFiles} fichiers.js
+│┃ 
+│┃ ❏ *Language :* ${botLang} ${langFlag}
+╰───────────── 
+> Bienvenue ${texte}
+`;
+
+        // ─── LIEN DE TON IMAGE ICI (PNG ou JPG) ───
+        // Tu peux héberger ton image en ligne et mettre son lien direct ici
+        const imageUrl = 'https://eliteprotech-url.zone.id/1790162923498sapf8q.png'; 
+
+        // 4. Envoi du package complet (Image + Texte)
+        await sock.sendMessage(myJid, { 
+            image: { url: imageUrl }, 
+            caption: bootMessage 
+        });
+
+        console.log(`✅ [SYNAPSE-X] Rapport visuel envoyé avec succès.`);
+
+    } catch (error) {        console.error("❌ [SYNAPSE-X] Erreur lors de la génération du rapport visuel :", error);
+    }
+});
+// Envoi du message au propriétaire du bot pour confirmation
+Module({
+    on: "start",
+    fromMe: false,
+    desc: "Notifie le propriétaire de la connexion réussie"
+}, async (botContext) => {
+    try {
+        const sock = botContext.client || botContext;
+        const ownerJid = '242050336960@s.whatsapp.net';
+        
+        const currentHandler = typeof config !== 'undefined' && config.HANDLERS === 'false' 
+          ? 'Aucun (Texte brut)' 
+          : (typeof config !== 'undefined' ? config.HANDLERS : '');
+          
+        const botName = sock.user?.name || "user@";
+        const hour = new Date().getHours();
+        const greeting = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
+        
+        const notifText = 
+`╭──⧼ *𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모* ⧽──≽
+│┃
+│┃ ❏ *Statut :* _✅ Connexion réussie_
+│┃ 
+│┃ ❏ _${greeting} je suis *${botName}*_
+│┃ 
+│┃ ❏ *Préfixe :* _Mon préfixe est ${currentHandler}_
+╰───────────── 
+> Merci d'avoir utilisé notre bot WhatsApp. Si vous avez des soucis où des suggestions n'hésitez pas.`;
+
+        // 1. Envoi du message et enregistrement de l'objet de réponse
+        const imageUrl = 'https://eliteprotech-url.zone.id/1792105274158nydc5g.jpeg'; 
+        const sentMsg = /*await sock.sendMessage(ownerJid, { text: notifText })*/
+        await sock.sendMessage(ownerJid, { 
+            image: { url: imageUrl }, 
+            caption: notifText 
+        });
+        console.log(`✅ [SYNAPSE-X] Notification envoyée au propriétaire.`);
+
+        // 2. Configuration du délai avant suppression (60000 ms = 60 secondes)
+        const DELETE_DELAY = 60000; 
+
+        setTimeout(async () => {
+            try {
+                if (sentMsg?.key) {
+                    await sock.sendMessage(ownerJid, { delete: sentMsg.key });
+                    console.log(`🗑️ [SYNAPSE-X] Notification supprimée automatiquement.`);
+                }
+            } catch (delError) {
+                console.error("❌ Erreur lors de la suppression de la notification :", delError);
+            }
+        }, DELETE_DELAY);
+
+    } catch (error) {
+        console.error("❌ [SYNAPSE-X] Erreur lors de l'envoi de la notification au propriétaire :", error);
+    }
+});

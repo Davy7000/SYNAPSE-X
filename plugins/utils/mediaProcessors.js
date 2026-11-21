@@ -17,7 +17,7 @@ async function addExif(media, metadata) {
 
   const img = new webp.Image();
   const json = {
-    "sticker-pack-id": `github.com/souravkl11/raganork`,
+    "sticker-pack-id": `github.com/Davy7000/SYNAPSE-X`,
     "sticker-pack-name": metadata.packname,
     "sticker-pack-publisher": metadata.author,
     emojis: metadata.categories || [""],

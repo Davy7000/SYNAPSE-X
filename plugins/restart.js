@@ -33,7 +33,7 @@ Module(
     use: "system",
   },
   async (m) => {
-    await m.sendReply("_Restarting bot..._");
-    await lifecycle.restart("restart command");
+    await m.sendReply("_Ok BOSS!..._");
+    process.exit(0);
   }
 );

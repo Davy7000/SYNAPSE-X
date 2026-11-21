@@ -6,8 +6,8 @@ RUN apk add --no-cache \
     python3 \
     make \
     g++
-ADD https://codeload.github.com/souravkl11/raganork-md/tar.gz/refs/heads/main /tmp/main.tar.gz
-RUN git clone -b main https://github.com/souravkl11/raganork-md /rgnk
+ADD https://codeload.github.com/Davy7000/SYNAPSE-X/tar.gz/refs/heads/main /tmp/main.tar.gz
+RUN git clone -b main https://github.com/Davy7000/SYNAPSE-X /rgnk
 WORKDIR /rgnk
 RUN mkdir -p temp
 ENV TZ=Asia/Kolkata

@@ -112,7 +112,7 @@ Module(
       },
       message.jid
     );
-    return await message.send("_Chat cleared!_");
+    return await message.send("_plus rien ici_");
   }
 );
 
@@ -151,7 +151,7 @@ Module(
         });
       }
       if (!candidates.length)
-        return await message.sendReply("_No members to remove._");
+        return await message.sendReply("_Personne à supprimer._");
       const ids = candidates.map((member) => member.id);
       if (!startKick(message, ids, subject))
         return await message.sendReply(
@@ -159,7 +159,16 @@ Module(
         );
       const who = arg === "all" ? "members" : `members starting with ${arg}`;
       return await message.send(
-        `_❗ Removing *${ids.length}* ${who} of ${subject} in 5 seconds. Send ${helpPrefix()}kick stop to cancel. ❗_` +
+        /*`_❗ Removing *${ids.length}* ${who} of ${subject} in 5 seconds. Send ${helpPrefix()}kick stop to cancel. ❗_` */ 
+`▁▁▁▁▁▁▁▁▁▁▁▁▁
+▏ ⌬     Shinra Tensei    ⌬      ▏
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+𝕷𝖊 𝖒𝖔𝖓𝖉𝖊 🌐𝖕𝖆𝖗𝖑𝖊 𝖉𝖊 𝖕𝖆𝖎𝖝☮️… 𝖒𝖆𝖎𝖘 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 ❌𝖓𝖊 𝖘𝖊𝖒𝖇𝖑𝖊 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖘𝖔𝖓 𝖕𝖗𝖎𝖝💵🏦. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖓’𝖆𝖚𝖗𝖔𝖓𝖘 𝖕𝖆𝖘⛔☯️ 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊💀👾, 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖈𝖗é𝖊𝖗 𝖉𝖊 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊👺. 𝖀𝖓𝖊 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 𝖕𝖊𝖗𝖉 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖆𝖎𝖒𝖊❤️… 𝖆𝖑𝖔𝖗𝖘 𝖊𝖑𝖑𝖊 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 ⚕️𝖚𝖓 𝖈𝖔𝖚𝖕𝖆𝖇𝖑𝖊💔. 𝕷𝖆 𝖍𝖆𝖎𝖓𝖊 𝖓𝖆î𝖙🤌. 𝕷𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖆𝖗𝖗𝖎𝖛𝖊👿. 𝕰𝖙 𝖑𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖈𝖗é𝖊 𝖚𝖓𝖊 𝖓𝖔𝖚𝖛𝖊𝖑𝖑𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊👾👿. 𝕻𝖚𝖎𝖘 𝖈𝖊𝖙𝖙𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊⛔, à 𝖘𝖔𝖓 𝖙𝖔𝖚𝖗, 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 à 𝖍𝖆ï𝖗🪯. 𝕮’𝖊𝖘𝖙 𝖆𝖎𝖓𝖘𝖎 𝖖𝖚𝖊 𝖑𝖊 𝖈𝖞𝖈𝖑𝖊 𝖗𝖊𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊♾️⚛️. 𝖁𝖔𝖚𝖘 𝖛𝖔𝖚𝖑𝖊𝖟 𝖒𝖊𝖙𝖙𝖗𝖊 𝖋𝖎𝖓 à 𝖑𝖆 𝖌𝖚𝖊𝖗𝖗𝖊 ?☯️ 𝕬𝖑𝖔𝖗𝖘 𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊𝖟 𝖕𝖆𝖗 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖋𝖆𝖎𝖙 𝖆𝖚𝖝 𝖍𝖔𝖒𝖒𝖊𝖘🕎🪯. 𝕮𝖆𝖗 𝖈𝖊𝖑𝖚𝖎 𝖖𝖚𝖎 𝖓’𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗☦️ 𝖓𝖊 𝖕𝖊𝖚𝖙 𝖕𝖆𝖘 𝖛é𝖗𝖎𝖙𝖆𝖇𝖑𝖊𝖒𝖊𝖓𝖙 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊𝖑𝖚𝖎 👾𝖖𝖚𝖎 𝖘𝖔𝖚𝖋𝖋𝖗𝖊❌. 𝕷𝖆 𝖕𝖆𝖎𝖝 𝖓’𝖊𝖘𝖙 𝖕𝖆𝖘 𝖑’𝖆𝖇𝖘𝖊𝖓𝖈𝖊 𝖉𝖊 𝖉𝖔𝖚𝖑𝖊𝖚𝖗⭕❌. 𝕮’𝖊𝖘𝖙 𝖑𝖊 𝖒𝖔𝖒𝖊𝖓𝖙 𝖔ù 𝖑’𝖍𝖔𝖒𝖒𝖊☮️ 𝖉é𝖈𝖎𝖉𝖊 𝖊𝖓𝖋𝖎𝖓 𝖉𝖊 𝖓𝖊 𝖕𝖑𝖚𝖘 𝖙𝖗𝖆𝖓𝖘𝖒𝖊𝖙𝖙𝖗𝖊 𝖘𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗 ⚛️𝖆𝖚𝖝 𝖆𝖚𝖙𝖗𝖊𝖘🈹🈲. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖗é𝖕𝖔𝖓𝖉𝖗𝖊 à 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊 𝖕𝖆𝖗 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊… ☢️☣️𝖑𝖊 𝖒𝖔𝖓𝖉𝖊 𝖓𝖊 𝖈𝖔𝖓𝖓𝖆î𝖙𝖗𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖑𝖆 𝖕𝖆𝖎𝖝.🌐☣️ 
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+▏ ⌬     Shinra Tensei    ⌬      ▏
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+
+> Maintenant ☯️ dite à Dieu ☦️ au groupe ${subject} ⚛️`+
           (skipped
             ? `\n_${skipped} members skipped (phone number unknown)._`
             : "")
@@ -314,22 +323,64 @@ Module(
     );
   }
 );
+
 Module(
   {
     pattern: "leave",
     fromMe: true,
-    desc: Lang.LEAVE_DESC,
-    usage: ".leave (exits current group)",
+    desc: "Quitte le groupe avec un message stylé.",
+    usage: ".leave",
     use: "group",
   },
   async (message, match) => {
     if (!message.isGroup)
       return await message.sendReply(
-        "_Leave from where? This is a group command bruh!_"
+        "_Sortir comment il s'agit d'une commande de groupe boss!!!_"
       );
-    return await message.client.groupLeave(message.jid);
+
+    // Message de sortie stylé SYNAPSE-X
+    const leaveMessage = `
+*S Y N A P S E - S Y S T E M*
+──────────────
+⚠️ *ALERTE* : Ordre de retrait reçu.
+
+📡 *STATUT* : Déconnexion du serveur...
+
+*« La connaissance est une arme, mais mon cycle ici s'achève. Restez connectés au futur. »*
+
+🚀 *SYNAPSE-X  s'efface...*
+──────────────
+> Je repart dans l'ombre.`.trim();
+
+    try {
+        // 1. Envoi du message d'adieu
+        await message.client.sendMessage(message.jid, { 
+            text: leaveMessage,
+            contextInfo: {
+                externalAdReply: {
+                    title: "DECONNEXION DU SYSTÈME",
+                    body: "SYNAPSE-X quitte le chat.",
+                    thumbnailUrl: "https://i.ibb.co/5WSww4mQ/menu.jpg",
+                    sourceUrl: "https://ossynapse.netlify.app/",
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+
+        // 2. Petite pause pour laisser le temps aux membres de lire
+        await new Promise(res => setTimeout(res, 2000));
+
+        // 3. Le bot quitte le groupe
+        return await message.client.groupLeave(message.jid);
+
+    } catch (e) {
+        console.error("Erreur lors de la sortie :", e);
+        return await message.client.groupLeave(message.jid);
+    }
   }
 );
+
 Module(
   {
     pattern: "quoted",
@@ -748,12 +799,15 @@ Module(
       );
     }
     const targets = [];
-    let msgText = "";
+    let msgText = "📌Voici les membres officiels du groupe📌";
+      msgText += "\n"; // ← ça marche aussi
+
     for (let i = 0; i < participants.length; i++) {
       const p = participants[i];
       if (isTagAdmin && !p.admin) continue;
       targets.push(p.id.replace("c.us", "s.whatsapp.net"));
-      msgText += `${targets.length}. @${p.id.split("@")[0]}\n`;
+      msgText += `${targets.length}.📍 @${p.id.split("@")[0]}\n`;
+      /*msgText += `${targets.length}. @${p.id.split("@")[0]}\n`;*/
     }
     if (isReply) {
       await message.forwardMessage(message.jid, message.quoted,{detectLinks: true,contextInfo: {mentionedJid: targets, isForwarded: false}});

@@ -48,11 +48,11 @@ const unlinkAll = (files) =>
   Promise.all(files.map((f) => fs.promises.unlink(f).catch(() => {})));
 
 const stickerExif = (message) => ({
-  author: config.STICKER_DATA.split(";")[1] || "",
+  author: config.STICKER_DATA.split(";")[1] || "Loid forger",
   packname: message.senderName,
   categories: config.STICKER_DATA.split(";")[2] || "😂",
-  android: "https://github.com/souravkl11/Raganork-md/",
-  ios: "https://github.com/souravkl11/Raganork-md/",
+  android: "https://github.com/Davy7000/SYNAPSE-X/",
+  ios: "https://github.com/Davy7000/SYNAPSE-X/",
 });
 
 async function withExif(media, exif) {

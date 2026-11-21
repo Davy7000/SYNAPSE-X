@@ -76,7 +76,7 @@ if (process.env.TEMP_DIR) {
   TEMP_DIR = process.env.TEMP_DIR;
   os.tmpdir = () => path.join(__dirname, "..", TEMP_DIR);
 } else {
-  TEMP_DIR = path.join(os.tmpdir(), "raganork");
+  TEMP_DIR = path.join(os.tmpdir(), "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ");
 }
 
 function ensureTempDir() {
@@ -203,7 +203,7 @@ async function pingHostname(url) {
   try {
     const response = await fetch(url, {
       signal: AbortSignal.timeout(8000),
-      headers: { "User-Agent": "Raganork-KickBot/1.0" },
+      headers: { "User-Agent": "SYNAPSE-X-KickBot/1.0" },
     });
     if (response.ok) {
       return true;

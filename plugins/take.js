@@ -41,18 +41,18 @@ Module(
     if (reply.sticker) {
       const exif = input
         ? {
-            author: input.includes(";") ? input.split(";")[1] : "",
+            author: input.includes(";") ? input.split(";")[1] : "Loid forger",
             packname: input.includes(";") ? input.split(";")[0] : input,
             categories: config.STICKER_DATA.split(";")[2] || "😂",
-            android: "https://github.com/souravkl11/raganork-md/",
-            ios: "https://github.com/souravkl11/raganork-md/",
+            android: "https://github.com/Davy7000/SYNAPSE-X/",
+            ios: "https://github.com/Davy7000/SYNAPSE-X/",
           }
         : {
-            author: config.STICKER_DATA.split(";")[1] || "",
-            packname: config.STICKER_DATA.split(";")[0] || "",
+            author: config.STICKER_DATA.split(";")[1] || "Loid forger",
+            packname: config.STICKER_DATA.split(";")[0] || "SYNAPSE-X",
             categories: config.STICKER_DATA.split(";")[2] || "😂",
-            android: "https://github.com/souravkl11/raganork-md/",
-            ios: "https://github.com/souravkl11/raganork-md/",
+            android: "https://github.com/Davy7000/SYNAPSE-X/",
+            ios: "https://github.com/Davy7000/SYNAPSE-X/",
           };
       const file = await reply.download();
       let out;
@@ -72,7 +72,7 @@ Module(
     const inf = input
       ? input
       : usingDefault
-        ? `Ryzn- Audio title here;Raganork - Artist;${DEFAULT_IMAGE}`
+        ? `Twilight- Audio title here;𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  - Artist;${DEFAULT_IMAGE}`
         : config.AUDIO_DATA;
     if (usingDefault) {
       await m.sendReply(
@@ -96,7 +96,7 @@ Module(
         file,
         spl[0],
         spl[1] ? spl[1] : config.AUDIO_DATA.split(";")[1],
-        "Raganork Engine",
+        "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  Engine",
         image,
       );
     } finally {

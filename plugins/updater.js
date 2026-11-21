@@ -39,7 +39,7 @@ Module(
       const { isStable: isStableUpdate, isBeta: isBetaUpdate } = info;
 
       if (!hasCommits && !versionChanged) {
-        return await edit("_Bot is up to date!_");
+        return await edit("_Laisse tomber le bot est à jour!_");
       }
 
       if (!command) {
