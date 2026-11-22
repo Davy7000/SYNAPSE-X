@@ -54,7 +54,7 @@ Module({
 
         await message.sendReply(
             `╭─〖 *S C A N  IMG* 〗──\n│\n│  📄 *Texte détecté :*\n│\n${extractedText.split('\n').map(l => `│  ${l}`).join('\n')}\n│\n╰──────────
-> _Attention le scan automatique peut comporter de légères erreurs selon la netteté de l'image_
+> _⚠️Attention le scan automatique peut comporter de légères erreurs selon la netteté de l'image_
 `
         );
 

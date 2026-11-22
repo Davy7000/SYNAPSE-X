@@ -72,7 +72,7 @@ Module(
     const inf = input
       ? input
       : usingDefault
-        ? `Twilight- Audio title here;𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  - Artist;${DEFAULT_IMAGE}`
+        ? `Twilight ♛- Audio title here;𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  - Artist;${DEFAULT_IMAGE}`
         : config.AUDIO_DATA;
     if (usingDefault) {
       await m.sendReply(

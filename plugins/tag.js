@@ -37,9 +37,7 @@ _Ce plugin permet au bot de répondre automatiquement avec une vidéo lorsqu'il 
 2. N'importe quel membre peut taguer le bot (ex: *@Bot*).
 3. Le bot répondra instantanément avec la vidéo configurée.
 
-*STATUT ACTUEL :* ${isTagBotActive ? '*Activé ✅*' : '*Désactivé ❌*'}
-
-_Note : Pour changer la vidéo, modifiez le lien dans le fichier source du plugin. Mais il faut l'autorisation de Twilight ou Karma_`;
+*STATUT ACTUEL :* ${isTagBotActive ? '*Activé ✅*' : '*Désactivé ❌*'}`;
 
     return await message.sendReply(helpText);
 });

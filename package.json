@@ -1,6 +1,6 @@
 {
   "name": "SYNAPSE-X",
-  "version": "7.3.31",
+  "version": "7.4.0",
   "description": "A multi functional wa bot.",
   "main": "index.js",
   "type": "commonjs",
@@ -15,7 +15,7 @@
     "baileys",
     "SYNAPSE-X"
   ],
-  "author": "Twilight X",
+  "author": "Twilight ♛",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.1",

@@ -10,12 +10,12 @@ const isPrivateBot = config.MODE !== 'public';
 ===================================================================================*/
 
 const OWNER_DETAILS = {
-    name: '𝑻𝒘𝒊𝒍𝒊𝒈𝒉𝒕_𝑲𝒊𝒏𝒈☯❥',
-    title: 'Administrateur',
+    name: 'T W I L I G H T  ♛',
+    title: 'Créateur du bot',
     number: '242050336960',
-    body: 'oss compagny',
+    body: 'Développeur web',
     image: "https://i.ibb.co/PZdr7GK6/temp.jpg",
-    thumbnailUrl: 'https://gist.github.com/'
+    thumbnailUrl: 'https://github.com/Davy7000/SYNAPSE-X'
 };
 
 /*===================================================================================

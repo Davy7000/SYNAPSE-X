@@ -11,7 +11,7 @@ const {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const DEFAULT_WELCOME = 
-`🎉 *BIENVENUE DANS LE GROUPE !* 🎉
+`🎉 *BIENVENUE DANS LE GROUPE* 🎉
 
 👤 *Membre :* $mention
 🏰 *Groupe :* $group

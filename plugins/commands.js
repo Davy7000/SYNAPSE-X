@@ -331,14 +331,14 @@ Module(
         }`;
       }
     }
-    let oss = 'OSS COMPAGNY';
+    let oss = 'LOID FORGER ♛';
     let cmdmenu = final.trim();
     const used = bytesToSize(os.freemem());
     const total = bytesToSize(os.totalmem());
     const totalUsers = await getTotalUserCount();
     const infoParts = config.BOT_INFO.split(";");
     const botName = infoParts[0] || "My Bot";
-    const botOwner = "TWILIGHT모";
+    const botOwner = "TWILIGHT ♛";
     const botVersion = VERSION;
 
     const videoPath = path.join(__dirname, "utils/images/video.mp4");

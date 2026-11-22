@@ -38,7 +38,7 @@ const entries = {
   PMB: { type: "string", default: "_Personal messages not allowed, BLOCKED!_" },
   READ_COMMAND: { type: "bool", default: true },
   RG: { type: "string", default: "919074309534-1632403322@g.us,120363116963909366@g.us" },
-  BOT_INFO: { type: "string", default: "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ;Twilight X;default" },
+  BOT_INFO: { type: "string", default: "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ;Twilight ♛;default" },
   RBG_KEY: { type: "string", default: "" },
   ALLOWED: { type: "string", default: "91,94,2" },
   NOT_ALLOWED: { type: "string", default: "852" },

@@ -10,7 +10,7 @@ Module({
 
     desc: "Lists all admins in the group",
 
-    type: "group"
+    use: "group"
 
 }, async (message, match) => {
 
