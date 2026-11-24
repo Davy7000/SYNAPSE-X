@@ -1,4 +1,4 @@
-const { commands, Module } = require("../main");
+/*const { commands, Module } = require("../main");
 const { MODE, HANDLERS, ALIVE, VERSION } = require("../config");
 const config = require("../config");
 const os = require("os");
@@ -552,4 +552,4 @@ Module(
     await message.sendReply("*Testing Alive Message:*");
     await parseAlive(message, aliveMessage);
   }
-);
+);*/
