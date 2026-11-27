@@ -7,10 +7,15 @@ const Schedule = require("../schedulers");
 const { bindings } = require("./baileys");
 const { STABLE_CONNECTION_MS } = require("./reconnect");
 const { sendStartMessage } = require("./start-message");
+const { handlePairing, isLocalSession } = require("./terminal-login");
+const { isHatchedId, forgetHatched, removeHatched } = require("./hatchery");
 
 async function handleConnectionUpdate(bot, update) {
   const { connection, lastDisconnect, qr } = update;
-  if (qr) {
+  const pairing = Boolean(qr) && (await handlePairing(bot, bot.sock));
+  if (qr && !pairing && bot.hatch?.onQr) {
+    await bot.hatch.onQr(qr);
+  } else if (qr && !pairing) {
     logger.info(
       { session: bot.sessionId },
       `QR code received, generating terminal QR...`,
@@ -46,6 +51,8 @@ async function handleConnectionUpdate(bot, update) {
     await Schedule.cleanup(bot.sessionId);
     bot.manager?.onSessionStateChange?.();
 
+    if (bot.hatch?.onClose && (await bot.hatch.onClose(statusCode))) return;
+
     if (statusCode === bindings.DisconnectReason.loggedOut) {
       bot.loggedOut = true;
       bot.stopReason = "logged_out";
@@ -53,10 +60,15 @@ async function handleConnectionUpdate(bot, update) {
         `Logged out. Please delete session data and rescan QR.`,
       );
       console.log(
-        `❌ [${bot.sessionId}] SESSION LOGGED OUT. Please rescan QR and update SESSION.`,
+        isHatchedId(bot.sessionId)
+          ? `❌ [${bot.sessionId}] HATCHED BOT LOGGED OUT. Link it again with the hatch command.`
+          : isLocalSession(bot.sessionId)
+            ? `❌ [${bot.sessionId}] SESSION LOGGED OUT. Restart the bot to log in again from the terminal (or rename this SESSION entry, e.g. qr:newname).`
+            : `❌ [${bot.sessionId}] SESSION LOGGED OUT. Please rescan QR and update SESSION.`,
       );
       bot._teardownSocket();
       await CustomAuthState.deleteSessionById(bot.sessionId);
+      await forgetHatched(bot);
     } else if (
       statusCode === bindings.DisconnectReason.connectionReplaced &&
       bot.reconnectAttempts >= bot.maxReconnectAttempts
@@ -76,6 +88,19 @@ async function handleConnectionUpdate(bot, update) {
       bot._scheduleReconnect(statusCode);
     }
   } else if (connection === "open") {
+    if (bot.hatch?.onOpen && !(await bot.hatch.onOpen())) return;
+    // logout needs an open socket
+    if (bot.forceLogout) {
+      bot.forceLogout = false;
+      const number = bot.authState?.getAccountId?.();
+      try {
+        await removeHatched(bot.manager, bot);
+        console.log(`- 🚪 [${bot.sessionId}] Hatched bot +${number} logged out (LOGOUT_HATCHED).`);
+      } catch (error) {
+        logger.error({ session: bot.sessionId, err: error }, `Failed to log out hatched bot`);
+      }
+      return;
+    }
     sessionLogger.info(
       { botId: bot.sock.user?.id },
       `Connection established.`,
@@ -84,6 +109,7 @@ async function handleConnectionUpdate(bot, update) {
     bot.lastOpenAt = Date.now();
     bot.stopReason = null;
     bot.loggedOut = false;
+    bot.loginMethod = null;
     // only forgive past failures once the link has stayed up for a while
     if (bot.stableTimer) clearTimeout(bot.stableTimer);
     bot.stableTimer = setTimeout(() => {

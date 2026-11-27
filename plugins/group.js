@@ -29,7 +29,9 @@ const phoneOf = (member) => {
 };
 
 const isProtected = (member, client) =>
-  Boolean(member.admin) || isBot(member.id, client) || isOwner(member.id, client);
+  Boolean(member.admin) ||
+  isBot(member.id, client) ||
+  isOwner(member.id, client);
 
 // the loop runs outside the command so the chat's queue stays free for `.kick stop`
 function startKick(message, userIds, subject) {
@@ -49,7 +51,10 @@ function startKick(message, userIds, subject) {
           await client.groupParticipantsUpdate(jid, [id], "remove");
           removed++;
         } catch (error) {
-          console.error(`Failed to remove ${id} from ${subject}:`, error.message);
+          console.error(
+            `Failed to remove ${id} from ${subject}:`,
+            error.message,
+          );
         }
       }
     } finally {
@@ -110,10 +115,10 @@ Module(
           },
         ],
       },
-      message.jid
+      message.jid,
     );
     return await message.send("_plus rien ici_");
-  }
+  },
 );
 
 Module(
@@ -137,10 +142,10 @@ Module(
     }
     if (arg === "all" || (arg && isNumeric(arg))) {
       const { participants, subject } = await message.client.groupMetadata(
-        message.jid
+        message.jid,
       );
       let candidates = participants.filter(
-        (member) => !isProtected(member, message.client)
+        (member) => !isProtected(member, message.client),
       );
       let skipped = 0;
       if (arg !== "all") {
@@ -155,12 +160,12 @@ Module(
       const ids = candidates.map((member) => member.id);
       if (!startKick(message, ids, subject))
         return await message.sendReply(
-          `_A kick is already running here. Use ${helpPrefix()}kick stop to cancel it._`
+          `_A kick is already running here. Use ${helpPrefix()}kick stop to cancel it._`,
         );
       const who = arg === "all" ? "members" : `members starting with ${arg}`;
       return await message.send(
-        /*`_❗ Removing *${ids.length}* ${who} of ${subject} in 5 seconds. Send ${helpPrefix()}kick stop to cancel. ❗_` */ 
-`▁▁▁▁▁▁▁▁▁▁▁▁▁
+        /*`_❗ Removing *${ids.length}* ${who} of ${subject} in 5 seconds. Send ${helpPrefix()}kick stop to cancel. ❗_` */
+        `▁▁▁▁▁▁▁▁▁▁▁▁▁
 ▏ ⌬     Shinra Tensei    ⌬      ▏
 ▔▔▔▔▔▔▔▔▔▔▔▔▔▔
 𝕷𝖊 𝖒𝖔𝖓𝖉𝖊 🌐𝖕𝖆𝖗𝖑𝖊 𝖉𝖊 𝖕𝖆𝖎𝖝☮️… 𝖒𝖆𝖎𝖘 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 ❌𝖓𝖊 𝖘𝖊𝖒𝖇𝖑𝖊 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖘𝖔𝖓 𝖕𝖗𝖎𝖝💵🏦. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖓’𝖆𝖚𝖗𝖔𝖓𝖘 𝖕𝖆𝖘⛔☯️ 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊💀👾, 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖈𝖗é𝖊𝖗 𝖉𝖊 𝖑𝖆 𝖘𝖔𝖚𝖋𝖋𝖗𝖆𝖓𝖈𝖊👺. 𝖀𝖓𝖊 𝖕𝖊𝖗𝖘𝖔𝖓𝖓𝖊 𝖕𝖊𝖗𝖉 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖆𝖎𝖒𝖊❤️… 𝖆𝖑𝖔𝖗𝖘 𝖊𝖑𝖑𝖊 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 ⚕️𝖚𝖓 𝖈𝖔𝖚𝖕𝖆𝖇𝖑𝖊💔. 𝕷𝖆 𝖍𝖆𝖎𝖓𝖊 𝖓𝖆î𝖙🤌. 𝕷𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖆𝖗𝖗𝖎𝖛𝖊👿. 𝕰𝖙 𝖑𝖆 𝖛𝖊𝖓𝖌𝖊𝖆𝖓𝖈𝖊 𝖈𝖗é𝖊 𝖚𝖓𝖊 𝖓𝖔𝖚𝖛𝖊𝖑𝖑𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊👾👿. 𝕻𝖚𝖎𝖘 𝖈𝖊𝖙𝖙𝖊 𝖛𝖎𝖈𝖙𝖎𝖒𝖊⛔, à 𝖘𝖔𝖓 𝖙𝖔𝖚𝖗, 𝖈𝖍𝖊𝖗𝖈𝖍𝖊 𝖖𝖚𝖊𝖑𝖖𝖚’𝖚𝖓 à 𝖍𝖆ï𝖗🪯. 𝕮’𝖊𝖘𝖙 𝖆𝖎𝖓𝖘𝖎 𝖖𝖚𝖊 𝖑𝖊 𝖈𝖞𝖈𝖑𝖊 𝖗𝖊𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊♾️⚛️. 𝖁𝖔𝖚𝖘 𝖛𝖔𝖚𝖑𝖊𝖟 𝖒𝖊𝖙𝖙𝖗𝖊 𝖋𝖎𝖓 à 𝖑𝖆 𝖌𝖚𝖊𝖗𝖗𝖊 ?☯️ 𝕬𝖑𝖔𝖗𝖘 𝖈𝖔𝖒𝖒𝖊𝖓𝖈𝖊𝖟 𝖕𝖆𝖗 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊 𝖖𝖚’𝖊𝖑𝖑𝖊 𝖋𝖆𝖎𝖙 𝖆𝖚𝖝 𝖍𝖔𝖒𝖒𝖊𝖘🕎🪯. 𝕮𝖆𝖗 𝖈𝖊𝖑𝖚𝖎 𝖖𝖚𝖎 𝖓’𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖈𝖔𝖓𝖓𝖚 𝖑𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗☦️ 𝖓𝖊 𝖕𝖊𝖚𝖙 𝖕𝖆𝖘 𝖛é𝖗𝖎𝖙𝖆𝖇𝖑𝖊𝖒𝖊𝖓𝖙 𝖈𝖔𝖒𝖕𝖗𝖊𝖓𝖉𝖗𝖊 𝖈𝖊𝖑𝖚𝖎 👾𝖖𝖚𝖎 𝖘𝖔𝖚𝖋𝖋𝖗𝖊❌. 𝕷𝖆 𝖕𝖆𝖎𝖝 𝖓’𝖊𝖘𝖙 𝖕𝖆𝖘 𝖑’𝖆𝖇𝖘𝖊𝖓𝖈𝖊 𝖉𝖊 𝖉𝖔𝖚𝖑𝖊𝖚𝖗⭕❌. 𝕮’𝖊𝖘𝖙 𝖑𝖊 𝖒𝖔𝖒𝖊𝖓𝖙 𝖔ù 𝖑’𝖍𝖔𝖒𝖒𝖊☮️ 𝖉é𝖈𝖎𝖉𝖊 𝖊𝖓𝖋𝖎𝖓 𝖉𝖊 𝖓𝖊 𝖕𝖑𝖚𝖘 𝖙𝖗𝖆𝖓𝖘𝖒𝖊𝖙𝖙𝖗𝖊 𝖘𝖆 𝖉𝖔𝖚𝖑𝖊𝖚𝖗 ⚛️𝖆𝖚𝖝 𝖆𝖚𝖙𝖗𝖊𝖘🈹🈲. 𝕿𝖆𝖓𝖙 𝖖𝖚𝖊 𝖓𝖔𝖚𝖘 𝖈𝖔𝖓𝖙𝖎𝖓𝖚𝖊𝖗𝖔𝖓𝖘 à 𝖗é𝖕𝖔𝖓𝖉𝖗𝖊 à 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊 𝖕𝖆𝖗 𝖑𝖆 𝖍𝖆𝖎𝖓𝖊… ☢️☣️𝖑𝖊 𝖒𝖔𝖓𝖉𝖊 𝖓𝖊 𝖈𝖔𝖓𝖓𝖆î𝖙𝖗𝖆 𝖏𝖆𝖒𝖆𝖎𝖘 𝖑𝖆 𝖕𝖆𝖎𝖝.🌐☣️ 
@@ -168,10 +173,10 @@ Module(
 ▏ ⌬     Shinra Tensei    ⌬      ▏
 ▔▔▔▔▔▔▔▔▔▔▔▔▔▔
 
-> Maintenant ☯️ dite à Dieu ☦️ au groupe ${subject} ⚛️`+
+> Maintenant ☯️ dite à Dieu ☦️ au groupe ${subject} ⚛️` +
           (skipped
             ? `\n_${skipped} members skipped (phone number unknown)._`
-            : "")
+            : ""),
       );
     }
     const user = message.mention?.[0] || message.reply_message?.jid;
@@ -183,7 +188,7 @@ Module(
       mentions: [user],
     });
     await message.client.groupParticipantsUpdate(message.jid, [user], "remove");
-  }
+  },
 );
 Module(
   {
@@ -192,7 +197,7 @@ Module(
     desc: Lang.ADD_DESC,
     warn: "You number might get banned, use with caution",
     use: "group",
-    usage: ".add 919876543210",
+    usage: ".add 242050336960",
   },
   async (message, match) => {
     if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
@@ -204,21 +209,21 @@ Module(
     if (!number) return await message.sendReply(Lang.NEED_USER);
     if (number.length < 7 || number.length > 15)
       return await message.sendReply(
-        "_That does not look like a phone number._"
+        "_That does not look like a phone number._",
       );
     const [result] = await message.client.groupParticipantsUpdate(
       message.jid,
       [number + "@s.whatsapp.net"],
-      "add"
+      "add",
     );
     const status = String(result?.status ?? "");
     return await message.sendReply(
       `_+${number} ${
         ADD_STATUS[status] ||
         `could not be added (status ${status || "unknown"})`
-      }_`
+      }_`,
     );
-  }
+  },
 );
 Module(
   {
@@ -236,8 +241,12 @@ Module(
       text: mentionjid(user) + Lang.PROMOTED,
       mentions: [user],
     });
-    await message.client.groupParticipantsUpdate(message.jid, [user], "promote");
-  }
+    await message.client.groupParticipantsUpdate(
+      message.jid,
+      [user],
+      "promote",
+    );
+  },
 );
 Module(
   {
@@ -250,7 +259,7 @@ Module(
   async (message, match) => {
     if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
     let approvalList = await message.client.groupRequestParticipantsList(
-      message.jid
+      message.jid,
     );
     if (!approvalList.length)
       return await message.sendReply("_No pending requests!_");
@@ -260,13 +269,13 @@ Module(
       switch (match) {
         case "approve all": {
           await message.sendReply(
-            `_Approving ${approvalJids.length} participants._`
+            `_Approving ${approvalJids.length} participants._`,
           );
           for (let x of approvalJids) {
             await message.client.groupRequestParticipantsUpdate(
               message.jid,
               [x],
-              "approve"
+              "approve",
             );
             await wait(900);
           }
@@ -274,13 +283,13 @@ Module(
         }
         case "reject all": {
           await message.sendReply(
-            `_Rejecting ${approvalJids.length} participants._`
+            `_Rejecting ${approvalJids.length} participants._`,
           );
           for (let x of approvalJids) {
             await message.client.groupRequestParticipantsUpdate(
               message.jid,
               [x],
-              "reject"
+              "reject",
             );
             await wait(900);
           }
@@ -288,14 +297,13 @@ Module(
         }
         default: {
           return await message.sendReply(
-            `_Invalid input_\n_Eg: ${helpPrefix()}requests approve all_\n_${helpPrefix()}requests reject all_`
+            `_Invalid input_\n_Eg: ${helpPrefix()}requests approve all_\n_${helpPrefix()}requests reject all_`,
           );
         }
       }
       return;
     }
-    let msg =
-      `*_Group join requests_*\n\n_(Use ${helpPrefix()}requests approve|reject all)_\n\n`;
+    let msg = `*_Group join requests_*\n\n_(Use ${helpPrefix()}requests approve|reject all)_\n\n`;
     const requestType = (type_, requestor) => {
       switch (type_) {
         case "linked_group_join":
@@ -311,17 +319,17 @@ Module(
         approvalList[x].jid.split("@")[0]
       }_*\n  _• via: ${requestType(
         approvalList[x].request_method,
-        approvalList[x].requestor
+        approvalList[x].requestor,
       )}_\n  _• at: ${new Date(
-        parseInt(approvalList[x].request_time) * 1000
+        parseInt(approvalList[x].request_time) * 1000,
       ).toLocaleString()}_\n\n`;
     }
     return await message.client.sendMessage(
       message.jid,
       { text: msg, mentions: approvalJids },
-      { quoted: message.data }
+      { quoted: message.data },
     );
-  }
+  },
 );
 
 Module(
@@ -335,7 +343,7 @@ Module(
   async (message, match) => {
     if (!message.isGroup)
       return await message.sendReply(
-        "_Sortir comment il s'agit d'une commande de groupe boss!!!_"
+        "_Sortir comment il s'agit d'une commande de groupe boss!!!_",
       );
 
     // Message de sortie stylé SYNAPSE-X
@@ -353,32 +361,31 @@ Module(
 > Je repart dans l'ombre.`.trim();
 
     try {
-        // 1. Envoi du message d'adieu
-        await message.client.sendMessage(message.jid, { 
-            text: leaveMessage,
-            contextInfo: {
-                externalAdReply: {
-                    title: "DECONNEXION DU SYSTÈME",
-                    body: "SYNAPSE-X quitte le chat.",
-                    thumbnailUrl: "https://i.ibb.co/5WSww4mQ/menu.jpg",
-                    sourceUrl: "https://ossynapse.netlify.app/",
-                    mediaType: 1,
-                    renderLargerThumbnail: true
-                }
-            }
-        });
+      // 1. Envoi du message d'adieu
+      await message.client.sendMessage(message.jid, {
+        text: leaveMessage,
+        contextInfo: {
+          externalAdReply: {
+            title: "DECONNEXION DU SYSTÈME",
+            body: "SYNAPSE-X quitte le chat.",
+            thumbnailUrl: "https://i.ibb.co/5WSww4mQ/menu.jpg",
+            sourceUrl: "https://ossynapse.netlify.app/",
+            mediaType: 1,
+            renderLargerThumbnail: true,
+          },
+        },
+      });
 
-        // 2. Petite pause pour laisser le temps aux membres de lire
-        await new Promise(res => setTimeout(res, 2000));
+      // 2. Petite pause pour laisser le temps aux membres de lire
+      await new Promise((res) => setTimeout(res, 2000));
 
-        // 3. Le bot quitte le groupe
-        return await message.client.groupLeave(message.jid);
-
+      // 3. Le bot quitte le groupe
+      return await message.client.groupLeave(message.jid);
     } catch (e) {
-        console.error("Erreur lors de la sortie :", e);
-        return await message.client.groupLeave(message.jid);
+      console.error("Erreur lors de la sortie :", e);
+      return await message.client.groupLeave(message.jid);
     }
-  }
+  },
 );
 
 Module(
@@ -392,11 +399,11 @@ Module(
   async (message, match) => {
     try {
       const repliedMessage = await getFullMessage(
-        message.reply_message.id + "_"
+        message.reply_message.id + "_",
       );
       if (!repliedMessage.found) {
         return await message.sendReply(
-          "_Original message not found in database!_"
+          "_Original message not found in database!_",
         );
       }
       const messageData = repliedMessage.messageData;
@@ -417,14 +424,14 @@ Module(
       }
       if (!quotedMessageId) {
         return await message.sendReply(
-          "_The replied message doesn't contain a quoted message!_"
+          "_The replied message doesn't contain a quoted message!_",
         );
       }
       const originalQuoted = await getFullMessage(quotedMessageId);
       if (originalQuoted.found) {
         return await message.forwardMessage(
           message.jid,
-          originalQuoted.messageData
+          originalQuoted.messageData,
         );
       } else if (quotedMessage) {
         const reconstructedMsg = {
@@ -439,14 +446,14 @@ Module(
         return await message.forwardMessage(message.jid, reconstructedMsg);
       } else {
         return await message.sendReply(
-          "_Quoted message not found and no cached data available!_"
+          "_Quoted message not found and no cached data available!_",
         );
       }
     } catch (error) {
       console.error("Error in quoted command:", error);
       return await message.sendReply("_Failed to load quoted message!_");
     }
-  }
+  },
 );
 
 Module(
@@ -466,7 +473,7 @@ Module(
       mentions: [user],
     });
     await message.client.groupParticipantsUpdate(message.jid, [user], "demote");
-  }
+  },
 );
 Module(
   {
@@ -489,30 +496,33 @@ Module(
     const minutes = parseMuteDuration(input);
     if (!minutes)
       return await message.sendReply(
-        `_Give a duration like 30m or 2h (up to 7 days), or no duration to mute until ${helpPrefix()}unmute_`
+        `_Give a duration like 30m or 2h (up to 7 days), or no duration to mute until ${helpPrefix()}unmute_`,
       );
     await message.client.groupSettingUpdate(message.jid, "announcement");
     cancelMuteTimer(key);
     const { jid } = message;
     const session = context.current();
     const fallback = message.client;
-    const timer = setTimeout(async () => {
-      muteTimers.delete(key);
-      // the socket is replaced on every reconnect, so ask the session for the live one
-      const client = session?.bot?.sock || fallback;
-      try {
-        await client.groupSettingUpdate(jid, "not_announcement");
-        await client.sendMessage(jid, { text: Lang.UNMUTED });
-      } catch (error) {
-        console.error(`Scheduled unmute failed for ${jid}:`, error.message);
-      }
-    }, minutes * 60 * 1000);
+    const timer = setTimeout(
+      async () => {
+        muteTimers.delete(key);
+        // the socket is replaced on every reconnect, so ask the session for the live one
+        const client = session?.bot?.sock || fallback;
+        try {
+          await client.groupSettingUpdate(jid, "not_announcement");
+          await client.sendMessage(jid, { text: Lang.UNMUTED });
+        } catch (error) {
+          console.error(`Scheduled unmute failed for ${jid}:`, error.message);
+        }
+      },
+      minutes * 60 * 1000,
+    );
     timer.unref();
     muteTimers.set(key, timer);
     await message.send(
-      `_Muted for ${describeMinutes(minutes)}. I will unmute then; if the bot restarts before that, use ${helpPrefix()}unmute._`
+      `_Muted for ${describeMinutes(minutes)}. I will unmute then; if the bot restarts before that, use ${helpPrefix()}unmute._`,
     );
-  }
+  },
 );
 Module(
   {
@@ -527,7 +537,7 @@ Module(
     cancelMuteTimer(accountKey(message.jid));
     await message.client.groupSettingUpdate(message.jid, "not_announcement");
     await message.send(Lang.UNMUTED);
-  }
+  },
 );
 Module(
   {
@@ -551,7 +561,7 @@ Module(
       if (config.MODE !== "public" && !message.fromOwner) return;
       await message.sendReply(message.jid);
     }
-  }
+  },
 );
 Module(
   {
@@ -570,9 +580,9 @@ Module(
         text: "https://chat.whatsapp.com/" + code,
         detectLinks: true,
       },
-      { detectLinks: true }
+      { detectLinks: true },
     );
-  }
+  },
 );
 Module(
   {
@@ -586,7 +596,7 @@ Module(
     if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
     await message.client.groupRevokeInvite(message.jid);
     await message.send(Lang.REVOKED);
-  }
+  },
 );
 Module(
   {
@@ -599,7 +609,7 @@ Module(
   async (message, match) => {
     if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
     return await message.client.groupSettingUpdate(message.jid, "locked");
-  }
+  },
 );
 Module(
   {
@@ -612,7 +622,7 @@ Module(
   async (message, match) => {
     if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
     return await message.client.groupSettingUpdate(message.jid, "unlocked");
-  }
+  },
 );
 Module(
   {
@@ -631,9 +641,9 @@ Module(
       return await message.sendReply(Lang.NOT_ADMIN);
     return await message.client.groupUpdateSubject(
       message.jid,
-      (match[1] || message.reply_message?.text).slice(0, 25)
+      (match[1] || message.reply_message?.text).slice(0, 25),
     );
-  }
+  },
 );
 Module(
   {
@@ -653,12 +663,12 @@ Module(
     try {
       return await message.client.groupUpdateDescription(
         message.jid,
-        (match[1] || message.reply_message?.text).slice(0, 512)
+        (match[1] || message.reply_message?.text).slice(0, 512),
       );
     } catch {
       return await message.sendReply("_Failed to change!_");
     }
-  }
+  },
 );
 async function mayReadGroups(message, jids) {
   if (message.fromOwner) return true;
@@ -684,8 +694,7 @@ Module(
   },
   async (message, match) => {
     const input = match[1]?.trim();
-    const usage =
-      `_*Need jids*_\n_*${helpPrefix()}common jid1,jid2*_\n _OR_ \n_*${helpPrefix()}common kick group_jid*_`;
+    const usage = `_*Need jids*_\n_*${helpPrefix()}common jid1,jid2*_\n _OR_ \n_*${helpPrefix()}common kick group_jid*_`;
     const kick = input?.match(/^kick(?:\s+(\S+))?$/i);
     if (kick) {
       if (!(await groupAdminGuard(message, { botAdmin: true }))) return;
@@ -697,7 +706,7 @@ Module(
       const common = g1.participants.filter(
         (member) =>
           g2.participants.some(({ id }) => id === member.id) &&
-          !isProtected(member, message.client)
+          !isProtected(member, message.client),
       );
       if (!common.length)
         return await message.sendReply("_No common members to remove._");
@@ -706,10 +715,12 @@ Module(
       for (const jid of jids) msg += "```@" + jid.split("@")[0] + "```\n";
       if (!startKick(message, jids, g2.subject))
         return await message.sendReply(
-          `_A kick is already running here. Use ${helpPrefix()}kick stop to cancel it._`
+          `_A kick is already running here. Use ${helpPrefix()}kick stop to cancel it._`,
         );
       return await message.client.sendMessage(message.jid, {
-        text: msg + `\n_Starting in 5 seconds. Send ${helpPrefix()}kick stop to cancel._`,
+        text:
+          msg +
+          `\n_Starting in 5 seconds. Send ${helpPrefix()}kick stop to cancel._`,
         mentions: jids,
       });
     }
@@ -720,7 +731,7 @@ Module(
     const g1 = await message.client.groupMetadata(co[0]);
     const g2 = await message.client.groupMetadata(co[1]);
     const common = g1.participants.filter(({ id: id1 }) =>
-      g2.participants.some(({ id: id2 }) => id2 === id1)
+      g2.participants.some(({ id: id2 }) => id2 === id1),
     );
     let msg = `_*Common participants of:*_ *${g1.subject}* & *${g2.subject}*\n_count: ${common.length}_\n`;
     const jids = [];
@@ -732,7 +743,7 @@ Module(
       text: msg,
       mentions: jids,
     });
-  }
+  },
 );
 Module(
   {
@@ -747,16 +758,18 @@ Module(
     const valid = co?.length === 2 && co[0] && co[1];
     if (!(await mayReadGroups(message, valid ? co : []))) return;
     if (!valid)
-      return await message.sendReply(`_*Need jids*_\n_*${helpPrefix()}diff jid1,jid2*_`);
+      return await message.sendReply(
+        `_*Need jids*_\n_*${helpPrefix()}diff jid1,jid2*_`,
+      );
     const g1 = (await message.client.groupMetadata(co[0])).participants;
     const g2 = (await message.client.groupMetadata(co[1])).participants;
     const only = g1.filter(
-      ({ id: jid1 }) => !g2.some(({ id: jid2 }) => jid2 === jid1)
+      ({ id: jid1 }) => !g2.some(({ id: jid2 }) => jid2 === jid1),
     );
     let msg = "_*Difference of participants*_\n_count: " + only.length + "_\n";
     for (const s of only) msg += "```" + s.id.split("@")[0] + "``` \n";
     return await message.sendReply(msg);
-  }
+  },
 );
 Module(
   {
@@ -784,7 +797,7 @@ Module(
       participants = groupMetadata.participants;
     } catch (error) {
       return await message.sendReply(
-        "_Error: Unable to fetch group metadata. Please check the group ID._"
+        "_Error: Unable to fetch group metadata. Please check the group ID._",
       );
     }
     const isTagAdmin = match[1]?.includes("admin");
@@ -792,15 +805,15 @@ Module(
     const isReply = !!message.reply_message;
     const customText = match[2]?.trim();
     const hasCustomText = customText && !customText.match(/(\d+@g\.us)/);
-    
+
     if (!isReply && !isTagAdmin && !isTagAll && !hasCustomText) {
       return await message.sendReply(
-        `_Tag what?_\n\n${helpPrefix()}tag \`<text here>\`\n${helpPrefix()}tag \`admin\`\n${helpPrefix()}tag \`all\`\n${helpPrefix()}tag \`(reply)\`\n${helpPrefix()}tag \`120363355307899193@g.us\``
+        `_Tag what?_\n\n${helpPrefix()}tag \`<text here>\`\n${helpPrefix()}tag \`admin\`\n${helpPrefix()}tag \`all\`\n${helpPrefix()}tag \`(reply)\`\n${helpPrefix()}tag \`120363355307899193@g.us\``,
       );
     }
     const targets = [];
     let msgText = "📌Voici les membres officiels du groupe📌";
-      msgText += "\n"; // ← ça marche aussi
+    msgText += "\n"; // ← ça marche aussi
 
     for (let i = 0; i < participants.length; i++) {
       const p = participants[i];
@@ -810,7 +823,10 @@ Module(
       /*msgText += `${targets.length}. @${p.id.split("@")[0]}\n`;*/
     }
     if (isReply) {
-      await message.forwardMessage(message.jid, message.quoted,{detectLinks: true,contextInfo: {mentionedJid: targets, isForwarded: false}});
+      await message.forwardMessage(message.jid, message.quoted, {
+        detectLinks: true,
+        contextInfo: { mentionedJid: targets, isForwarded: false },
+      });
     } else if (hasCustomText) {
       await message.client.sendMessage(message.jid, {
         text: customText,
@@ -822,7 +838,7 @@ Module(
         mentions: targets,
       });
     }
-  }
+  },
 );
 Module(
   {
@@ -839,7 +855,7 @@ Module(
     if (!user)
       return await message.sendReply("_Reply to a user or mention them._");
     await message.client.updateBlockStatus(user, "block");
-  }
+  },
 );
 Module(
   {
@@ -856,7 +872,7 @@ Module(
     if (!matchResult) return await message.sendReply("_*Need group link*_");
     let inviteCode = matchResult[1];
     await message.client.groupAcceptInvite(inviteCode);
-  }
+  },
 );
 Module(
   {
@@ -873,7 +889,7 @@ Module(
     if (!user)
       return await message.sendReply("_Reply to a user or mention them._");
     await message.client.updateBlockStatus(user, "unblock");
-  }
+  },
 );
 Module(
   {
@@ -892,7 +908,7 @@ Module(
         "*Usage:*\n" +
           `• \`${helpPrefix()}getjids all\` - Show all group JIDs\n` +
           `• \`${helpPrefix()}getjids recent\` - Show recent chat JIDs (default 10)\n` +
-          `• \`${helpPrefix()}getjids recent 15\` - Show 15 recent chat JIDs`
+          `• \`${helpPrefix()}getjids recent 15\` - Show 15 recent chat JIDs`,
       );
     }
     if (command === "all") {
@@ -985,7 +1001,7 @@ Module(
               allGroups[chat.jid].subject || chat.name || "Unknown Group";
           }
           const lastMessageTime = new Date(
-            chat.lastMessageTime
+            chat.lastMessageTime,
           ).toLocaleString();
           const chatInfo = `_*${count}. ${chatType}:*_ \`${chatName}\`\n_JID:_ \`${chat.jid}\`\n_Last Message:_ ${lastMessageTime}\n\n`;
           if (currentChunk.length + chatInfo.length > chunkSize) {
@@ -1008,7 +1024,7 @@ Module(
         await message.sendReply(_msg);
       }
     }
-  }
+  },
 );
 Module(
   {
@@ -1030,14 +1046,14 @@ Module(
       try {
         var image = await message.client.profilePictureUrl(
           message.reply_message?.jid,
-          "image"
+          "image",
         );
       } catch {
         return await message.sendReply("_Profile pic not found!_");
       }
       return await message.sendReply({ url: image }, "image");
     }
-  }
+  },
 );
 Module(
   {
@@ -1062,7 +1078,7 @@ Module(
       return await message.sendReply("_Profile pic not found!_");
     }
     return await message.sendReply({ url: image }, "image");
-  }
+  },
 );
 
 Module(
@@ -1077,12 +1093,14 @@ Module(
   async (message, match) => {
     const rawInput = (match[1] || "").trim();
     const quoted = message.reply_message;
-    const jidMatch = rawInput.match(/(\d+(?:-\d+)?@g\.us|\d+@s\.whatsapp\.net|\d+@lid)/i);
+    const jidMatch = rawInput.match(
+      /(\d+(?:-\d+)?@g\.us|\d+@s\.whatsapp\.net|\d+@lid)/i,
+    );
     const hasTargetJid = !!jidMatch;
 
     if (!message.isGroup && !hasTargetJid) {
       return await message.sendReply(
-        `_In DM, use ${helpPrefix()}gstatus <group_jid> and reply to a message._`
+        `_In DM, use ${helpPrefix()}gstatus <group_jid> and reply to a message._`,
       );
     }
 
@@ -1097,23 +1115,31 @@ Module(
     // if (!admin) return await message.sendReply(Lang.NOT_ADMIN);
 
     if (typeof message.sendGroupStatus !== "function") {
-      return await message.sendReply("_Group status is not supported in this build._");
+      return await message.sendReply(
+        "_Group status is not supported in this build._",
+      );
     }
 
     const targetJid = hasTargetJid ? jidMatch[1] : message.jid;
-    const text = hasTargetJid ? rawInput.replace(jidMatch[0], "").trim() : rawInput;
+    const text = hasTargetJid
+      ? rawInput.replace(jidMatch[0], "").trim()
+      : rawInput;
 
     if (!targetJid.endsWith("@g.us")) {
-      return await message.sendReply(`_Target must be a valid group JID (..@g.us)._\n_Example: ${helpPrefix()}gstatus 120363xxxx@g.us (reply to a message)_`);
+      return await message.sendReply(
+        `_Target must be a valid group JID (..@g.us)._\n_Example: ${helpPrefix()}gstatus 120363xxxx@g.us (reply to a message)_`,
+      );
     }
 
     if (hasTargetJid && !quoted) {
-      return await message.sendReply(`_Reply to a message first, then use ${helpPrefix()}gstatus <jid>._`);
+      return await message.sendReply(
+        `_Reply to a message first, then use ${helpPrefix()}gstatus <jid>._`,
+      );
     }
 
     if (!quoted && !text) {
       return await message.sendReply(
-        "_Reply to an image/video/audio or provide text to post group status._"
+        "_Reply to an image/video/audio or provide text to post group status._",
       );
     }
 
@@ -1166,7 +1192,7 @@ Module(
         const finalText = (text || quotedText || "").trim();
         if (!finalText) {
           return await message.sendReply(
-            "_Unsupported reply type. Use image, video, audio, or a text message._"
+            "_Unsupported reply type. Use image, video, audio, or a text message._",
           );
         }
         await sendGroupStatusToTarget({ text: finalText });
@@ -1179,12 +1205,12 @@ Module(
       }
 
       return await message.sendReply(
-        "_Unsupported reply type. Use image, video, audio, or text._"
+        "_Unsupported reply type. Use image, video, audio, or text._",
       );
     } catch (error) {
       return await message.sendReply(
-        `_Failed to post group status: ${error.message}_`
+        `_Failed to post group status: ${error.message}_`,
       );
     }
-  }
+  },
 );

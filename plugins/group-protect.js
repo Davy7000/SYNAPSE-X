@@ -18,12 +18,16 @@ const config = require("../config");
 const { helpPrefix } = require("../core/plugins/registry");
 const badWords = require("./utils/badwords");
 const { setVar, containsDisallowedWords, listOf } = require("./manage");
+const { isGroupStatusPost } = require("../core/session/features/status-stanza");
+const { debugOn } = require("../core/helpers");
+const { getString } = require("./utils/lang");
+const Lang = getString("group_protect");
 
 Module(
   {
     pattern: "antibot ?(.*)",
     fromMe: false,
-    desc: "Detects other bot's messages and kicks.",
+    desc: Lang.DETECTS_OTHER_BOTS_MESSAGES_AND,
     use: "group",
   },
   async (message, match) => {
@@ -36,7 +40,7 @@ Module(
       });
       if (match[1] === "on") {
         if (!(await isAdmin(message)))
-          return await message.sendReply("_I'm not an admin!_");
+          return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
         await antibot.set(message.jid);
       }
       if (match[1] === "off") {
@@ -46,14 +50,11 @@ Module(
         var status = jids.includes(message.jid) ? "on" : "off";
         var { subject } = await message.client.groupMetadata(message.jid);
         return await message.sendReply(
-          `_Antibot menu of ${subject}_` +
-            "\n\n_Antibot is currently turned *" +
-            status +
-            `*_\n\n_Use ${helpPrefix()}antibot on/off_`
+          Lang.ANTIBOT_MENU_OF_ANTIBOT_IS.format(subject, status).replaceAll("{p}", helpPrefix())
         );
       }
       await message.sendReply(
-        match[1] === "on" ? "_Antibot activated!_" : "_Antibot turned off!_"
+        match[1] === "on" ? Lang.ANTIBOT_ACTIVATED : Lang.ANTIBOT_TURNED_OFF
       );
     }
   }
@@ -63,7 +64,7 @@ Module(
   {
     pattern: "antispam ?(.*)",
     fromMe: false,
-    desc: "Detects spam messages and kicks user.",
+    desc: Lang.DETECTS_SPAM_MESSAGES_AND_KICKS,
     use: "group",
   },
   async (message, match) => {
@@ -76,7 +77,7 @@ Module(
       });
       if (match[1] === "on") {
         if (!(await isAdmin(message)))
-          return await message.sendReply("_I'm not an admin!_");
+          return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
         await antispam.set(message.jid);
       }
       if (match[1] === "off") {
@@ -86,14 +87,11 @@ Module(
         var status = jids.includes(message.jid) ? "on" : "off";
         var { subject } = await message.client.groupMetadata(message.jid);
         return await message.sendReply(
-          `_Anti spam menu of ${subject}_` +
-            "\n\n_Antispam is currently turned *" +
-            status +
-            `*_\n\n_Use ${helpPrefix()}antispam on/off_`
+          Lang.ANTI_SPAM_MENU_OF_ANTISPAM.format(subject, status).replaceAll("{p}", helpPrefix())
         );
       }
       await message.sendReply(
-        match[1] === "on" ? "_Antispam activated!_" : "_Antispam turned off!_"
+        match[1] === "on" ? Lang.ANTISPAM_ACTIVATED : Lang.ANTISPAM_TURNED_OFF
       );
     }
   }
@@ -103,7 +101,7 @@ Module(
   {
     pattern: "pdm ?(.*)",
     fromMe: false,
-    desc: "Detects promote/demote and sends alert.",
+    desc: Lang.DETECTS_PROMOTE_DEMOTE_AND_SENDS,
     use: "group",
   },
   async (message, match) => {
@@ -124,14 +122,11 @@ Module(
         var status = jids.includes(message.jid) ? "on" : "off";
         var { subject } = await message.client.groupMetadata(message.jid);
         return await message.sendReply(
-          `_Promote|demote alert message menu of ${subject}_` +
-            "\n\n_PDM alert is currently turned *" +
-            status +
-            `*_\n\n_Use ${helpPrefix()}pdm on/off_`
+          Lang.PROMOTE_DEMOTE_ALERT_MESSAGE_MENU.format(subject, status).replaceAll("{p}", helpPrefix())
         );
       }
       await message.sendReply(
-        match[1] === "on" ? "_Pdm activated!_" : "_Pdm turned off!_"
+        match[1] === "on" ? Lang.PDM_ACTIVATED : Lang.PDM_TURNED_OFF
       );
     }
   }
@@ -141,7 +136,7 @@ Module(
   {
     pattern: "antidemote ?(.*)",
     fromMe: true,
-    desc: "Detects demote and automatically promotes demoted one and demotes person who demoted.",
+    desc: Lang.DETECTS_DEMOTE_AND_AUTOMATICALLY_PROMOTES,
     use: "group",
   },
   async (message, match) => {
@@ -162,14 +157,11 @@ Module(
       var status = jids.includes(message.jid) ? "on" : "off";
       var { subject } = await message.client.groupMetadata(message.jid);
       return await message.sendReply(
-        `_Anti demote menu of ${subject}_` +
-          "\n\n_This feature is currently turned *" +
-          status +
-          `*_\n\n_Use ${helpPrefix()}antidemote on/off_`
+        Lang.ANTI_DEMOTE_MENU_OF_THIS.format(subject, status).replaceAll("{p}", helpPrefix())
       );
     }
     await message.sendReply(
-      match[1] === "on" ? "_Antidemote activated!_" : "_Antidemote turned off!_"
+      match[1] === "on" ? Lang.ANTIDEMOTE_ACTIVATED : Lang.ANTIDEMOTE_TURNED_OFF
     );
   }
 );
@@ -178,7 +170,7 @@ Module(
   {
     pattern: "antipromote ?(.*)",
     fromMe: true,
-    desc: "Detects promote and automatically demotes promoted one and demotes person who promoted.",
+    desc: Lang.DETECTS_PROMOTE_AND_AUTOMATICALLY_DEMOTES,
     use: "group",
   },
   async (message, match) => {
@@ -199,16 +191,13 @@ Module(
       var status = jids.includes(message.jid) ? "on" : "off";
       var { subject } = await message.client.groupMetadata(message.jid);
       return await message.sendReply(
-        `_Anti promote menu of ${subject}_` +
-          "\n\n_This feature is currently turned *" +
-          status +
-          `*_\n\n_Use ${helpPrefix()}antipromote on/off_`
+        Lang.ANTI_PROMOTE_MENU_OF_THIS.format(subject, status).replaceAll("{p}", helpPrefix())
       );
     }
     await message.sendReply(
       match[1] === "on"
-        ? "_Antipromote activated!_"
-        : "_Antipromote turned off!_"
+        ? Lang.ANTIPROMOTE_ACTIVATED
+        : Lang.ANTIPROMOTE_TURNED_OFF
     );
   }
 );
@@ -217,7 +206,7 @@ Module(
   {
     pattern: "antilink ?(.*)",
     fromMe: false,
-    desc: "Advanced antilink system with warn/kick/delete modes and flexible link filtering",
+    desc: Lang.ADVANCED_ANTILINK_SYSTEM_WITH_WARN,
     use: "group",
   },
   async (message, match) => {
@@ -235,7 +224,7 @@ Module(
         case "on":
         case "enable":
           if (!(await isAdmin(message))) {
-            return await message.sendReply("_I'm not an admin!_");
+            return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
           }
 
           if (!settings) {
@@ -252,10 +241,7 @@ Module(
           }
 
           return await message.sendReply(
-            `✅ *Antilink Enabled!*\n\n` +
-              `• Mode: *${settings.mode.toUpperCase()}*\n` +
-              `• Type: *${settings.isWhitelist ? "WHITELIST" : "BLACKLIST"}*\n` +
-              `• Use \`${helpPrefix()}antilink help\` for more options`
+            Lang.ANTILINK_ENABLED_MODE_TYPE_USE.format(settings.mode.toUpperCase(), settings.isWhitelist ? Lang.WHITELIST_UPPER : Lang.BLACKLIST_UPPER).replaceAll("{p}", helpPrefix())
           );
 
         case "off":
@@ -267,21 +253,17 @@ Module(
             });
           }
 
-          return await message.sendReply("❌ *Antilink Disabled!*");
+          return await message.sendReply(Lang.ANTILINK_DISABLED);
 
         case "mode":
           if (!value || !["warn", "kick", "delete"].includes(value)) {
             return await message.sendReply(
-              `_Invalid mode! Available modes:_\n\n` +
-                `• \`warn\` - Warn users for links\n` +
-                `• \`kick\` - Kick users for links\n` +
-                `• \`delete\` - Only delete the message\n\n` +
-                `_Usage:_ \`${helpPrefix()}antilink mode delete\``
+              Lang.INVALID_MODE_AVAILABLE_MODES_WARN.replaceAll("{p}", helpPrefix())
             );
           }
 
           if (!(await isAdmin(message))) {
-            return await message.sendReply("_I'm not an admin!_");
+            return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
           }
 
           if (!settings) {
@@ -298,23 +280,18 @@ Module(
           }
 
           return await message.sendReply(
-            `✅ *Antilink mode set to ${value.toUpperCase()}!*\n\n` +
-              `${
-                value === "warn"
-                  ? "⚠️ Users will be warned for sending links"
+            Lang.ANTILINK_MODE_SET_TO.format(value.toUpperCase(), value === "warn"
+                  ? Lang.USERS_WILL_BE_WARNED_FOR
                   : value === "kick"
-                  ? "👢 Users will be kicked for sending links"
-                  : "🗑️ Links will be deleted without action"
-              }`
+                  ? Lang.USERS_WILL_BE_KICKED_FOR
+                  : Lang.LINKS_WILL_BE_DELETED_WITHOUT)
           );
 
         case "allow":
         case "whitelist":
           if (!value) {
             return await message.sendReply(
-              `_Add domains to whitelist:_\n\n` +
-                `_Usage:_ \`${helpPrefix()}antilink allow google.com,youtube.com\`\n` +
-                `_Current:_ ${settings?.allowedLinks || "gist,instagram,youtu"}`
+              Lang.ADD_DOMAINS_TO_WHITELIST_USAGE.format(settings?.allowedLinks || "gist,instagram,youtu").replaceAll("{p}", helpPrefix())
             );
           }
 
@@ -339,18 +316,14 @@ Module(
           }
 
           return await message.sendReply(
-            `✅ *Allowed links updated!*\n\n` +
-              `*Whitelist mode:* Only these domains are allowed\n` +
-              `*Domains:* ${allowedDomains.join(", ")}`
+            Lang.ALLOWED_LINKS_UPDATED_WHITELIST_MODE.format(allowedDomains.join(", "))
           );
 
         case "block":
         case "blacklist":
           if (!value) {
             return await message.sendReply(
-              `_Add domains to blacklist:_\n\n` +
-                `_Usage:_ \`${helpPrefix()}antilink block facebook.com,twitter.com\`\n` +
-                `_Current:_ ${settings?.blockedLinks || "None"}`
+              Lang.ADD_DOMAINS_TO_BLACKLIST_USAGE.format(settings?.blockedLinks || Lang.NONE).replaceAll("{p}", helpPrefix())
             );
           }
 
@@ -375,18 +348,14 @@ Module(
           }
 
           return await message.sendReply(
-            `✅ *Blocked links updated!*\n\n` +
-              `*Blacklist mode:* These domains are blocked\n` +
-              `*Domains:* ${blockedDomains.join(", ")}`
+            Lang.BLOCKED_LINKS_UPDATED_BLACKLIST_MODE.format(blockedDomains.join(", "))
           );
 
         case "message":
         case "msg":
           if (!value) {
             return await message.sendReply(
-              `_Set custom warning message:_\n\n` +
-                `_Usage:_ \`${helpPrefix()}antilink message Links not allowed!\`\n` +
-                `_Current:_ ${settings?.customMessage || "Default message"}`
+              Lang.SET_CUSTOM_WARNING_MESSAGE_USAGE.format(settings?.customMessage || Lang.DEFAULT_MESSAGE).replaceAll("{p}", helpPrefix())
             );
           }
 
@@ -404,7 +373,7 @@ Module(
           }
 
           return await message.sendReply(
-            `✅ *Custom message set!*\n\n` + `*Message:* ${value}`
+            Lang.CUSTOM_MESSAGE_SET_MESSAGE.format(value)
           );
 
         case "reset":
@@ -412,31 +381,12 @@ Module(
             await antilinkConfig.delete(message.jid);
           }
           return await message.sendReply(
-            "🔄 *Antilink settings reset to default!*"
+            Lang.ANTILINK_SETTINGS_RESET_TO_DEFAULT
           );
 
         case "help":
           return await message.sendReply(
-            `🛡️ *Antilink System Help*\n\n` +
-              `*Basic Commands:*\n` +
-              `• \`${helpPrefix()}antilink on/off\` - Enable/disable\n` +
-              `• \`${helpPrefix()}antilink mode warn/kick/delete\` - Set action\n\n` +
-              `*Link Control:*\n` +
-              `• \`${helpPrefix()}antilink allow domain1,domain2\` - Whitelist mode\n` +
-              `• \`${helpPrefix()}antilink block domain1,domain2\` - Blacklist mode\n\n` +
-              `*Customization:*\n` +
-              `• \`${helpPrefix()}antilink message Your text\` - Custom warning\n` +
-              `• \`${helpPrefix()}antilink reset\` - Reset to default\n` +
-              `• \`${helpPrefix()}antilink status\` - View current settings\n\n` +
-              `*Detection:*\n` +
-              `• Catches \`https://example.com\`\n` +
-              `• Catches \`www.example.com\`\n` +
-              `• Catches \`example.com\`\n` +
-              `• Catches \`example.com/path\`\n\n` +
-              `*Modes:*\n` +
-              `• *WARN* - Issues warnings, kicks after limit\n` +
-              `• *KICK* - Immediately kicks users\n` +
-              `• *DELETE* - Only deletes the message`
+            Lang.ANTILINK_SYSTEM_HELP_BASIC_COMMANDS.replaceAll("{p}", helpPrefix())
           );
 
         case "status":
@@ -455,101 +405,131 @@ Module(
           const { subject } = await message.client.groupMetadata(message.jid);
 
           return await message.sendReply(
-            `🛡️ *Antilink Status - ${subject}*\n\n` +
-              `*Status:* ${settings.enabled ? "✅ ENABLED" : "❌ DISABLED"}\n` +
-              `*Mode:* ${settings.mode?.toUpperCase() || "DELETE"}\n` +
-              `*Type:* ${
-                settings.isWhitelist ? "⚪ WHITELIST" : "⚫ BLACKLIST"
-              }\n\n` +
-              `*${settings.isWhitelist ? "Allowed" : "Blocked"} Domains:*\n` +
-              `${
-                settings.isWhitelist
+            Lang.ANTILINK_STATUS_STATUS_MODE_TYPE.format(subject, settings.enabled ? Lang.ENABLED : Lang.DISABLED, settings.mode?.toUpperCase() || Lang.MODE_DELETE, settings.isWhitelist ? Lang.WHITELIST : Lang.BLACKLIST, settings.isWhitelist ? Lang.ALLOWED_WORD : Lang.BLOCKED_WORD, settings.isWhitelist
                   ? settings.allowedLinks || "gist,instagram,youtu"
-                  : settings.blockedLinks || "None"
-              }\n\n` +
-              `*Custom Message:* ${settings.customMessage || "Default"}\n\n` +
-              `_Use \`${helpPrefix()}antilink help\` for all commands_`
+                  : settings.blockedLinks || Lang.NONE, settings.customMessage || Lang.DEFAULT).replaceAll("{p}", helpPrefix())
           );
       }
     } catch (error) {
       console.error("Antilink error:", error);
       return await message.sendReply(
-        "_An error occurred while updating antilink settings._"
+        Lang.AN_ERROR_OCCURRED_WHILE_UPDATING
       );
     }
   }
 );
 
-const STATUS_MENTION_ACTIONS = {
-  delete: "🗑️ delete the mention",
-  kick: "👢 kick the member",
-  both: "🗑️👢 delete the mention and kick the member",
+// .antistatus: statuses aimed at this group, of two kinds, each with its own switch:
+//   mention  a member's own status that mentions the group  (row.enabled, the original column)
+//   post     a status posted to the group itself            (row.postEnabled)
+// the status is always deleted; the shared action decides what happens to the member.
+const STATUS_ACTIONS = {
+  delete: Lang.ACTION_DELETE,
+  warn: Lang.DELETE_THE_STATUS_AND_WARN,
+  kick: Lang.ACTION_KICK,
 };
-const DEFAULT_STATUS_MENTION_REPLY =
-  "⚠️ *@user*, mentioning this group in a status is not allowed here.";
+// "both": rows saved before warn existed
+const statusAction = (action) => (action === "both" ? "kick" : STATUS_ACTIONS[action] ? action : "delete");
 
-const statusMentionSummary = (conf) =>
-  `*Status:* ${conf.enabled ? "✅ ENABLED" : "❌ DISABLED"}\n` +
-  `*Action:* ${STATUS_MENTION_ACTIONS[conf.action] || STATUS_MENTION_ACTIONS.delete}\n` +
-  `*Reply:* ${conf.replyEnabled ? "✅ ON" : "❌ OFF"}\n` +
-  `*Reply text:* ${conf.customMessage || "Default"}`;
+const STATUS_KINDS = {
+  mention: {
+    field: "enabled",
+    label: Lang.STATUS_MENTIONS,
+    defaultReply: Lang.USER_MENTIONING_THIS_GROUP_IN,
+    warnReason: Lang.MENTIONING_THE_GROUP_IN_A,
+    detect: (message) => Boolean(message.data?.message?.groupStatusMentionMessage),
+    // a mention is an ordinary group message
+    remove: (message) => message.client.sendMessage(message.jid, { delete: message.data.key }),
+  },
+  post: {
+    field: "postEnabled",
+    label: Lang.GROUP_STATUS_POSTS,
+    defaultReply: Lang.USER_POSTING_STATUSES_IN_THIS,
+    warnReason: Lang.POSTING_A_STATUS_IN_THE,
+    detect: (message) => {
+      const m = message.data?.message;
+      return Boolean(
+        m?.groupStatusMessageV2 || m?.groupStatusMessage || isGroupStatusPost(message.jid, message.id)
+      );
+    },
+    remove: (message) => message.revokeGroupStatus(message.data.key),
+  },
+};
+
+const onOff = (value) => (value ? Lang.ON : Lang.OFF);
+const statusSummary = (conf) =>
+  Lang.STATUS_SUMMARY.format(
+    onOff(conf.enabled),
+    onOff(conf.postEnabled),
+    STATUS_ACTIONS[statusAction(conf.action)],
+    onOff(conf.replyEnabled),
+    conf.customMessage || Lang.DEFAULT
+  );
 
 Module(
   {
-    pattern: "antistatusmention ?(.*)",
+    pattern: "antistatus(?: |$)(.*)",
     fromMe: false,
-    desc: "Deletes group status mentions and/or kicks the member who posted them, with an optional reply",
+    desc: Lang.DELETES_STATUSES_THAT_MENTION_THIS,
     use: "group",
   },
   async (message, match) => {
     if (!(await groupAdminGuard(message))) return;
 
     const input = (match[1] || "").trim();
-    const command = input.split(/\s+/)[0].toLowerCase();
-    const value = input.slice(command.length).trim();
-    const p = helpPrefix();
-    const name = `${p}antistatusmention`;
+    let [command = "", ...rest] = input.split(/\s+/);
+    command = command.toLowerCase();
+    const value = rest.join(" ").trim();
+    const name = `${helpPrefix()}antistatus`;
     const by = { updatedBy: message.sender };
+    const needBotAdmin = async () => {
+      if (await isAdmin(message)) return false;
+      await message.sendReply(Lang.IM_NOT_AN_ADMIN);
+      return true;
+    };
 
     let conf = await antiStatusMention.get(message.jid);
 
     try {
       switch (command) {
         case "on":
-        case "enable":
-          if (!(await isAdmin(message))) {
-            return await message.sendReply("_I'm not an admin!_");
-          }
-          conf = await antiStatusMention.set(message.jid, { enabled: true, ...by });
+        case "off": {
+          const on = command === "on";
+          if (on && (await needBotAdmin())) return;
+          conf = await antiStatusMention.set(message.jid, { enabled: on, postEnabled: on, ...by });
           return await message.sendReply(
-            `✅ *Anti status mention enabled!*\n\n${statusMentionSummary(conf)}\n\n` +
-              `_Use \`${name} help\` for more options_`
+            Lang.ANTI_STATUS_TURNED.format(on ? "✅" : "❌", command.toUpperCase(), statusSummary(conf), (on ? Lang.USE_HELP_FOR_MORE_OPTIONS.format(name) : ""))
           );
+        }
 
-        case "off":
-        case "disable":
-          if (conf) await antiStatusMention.set(message.jid, { enabled: false, ...by });
-          return await message.sendReply("❌ *Anti status mention disabled!*");
+        case "mention":
+        case "post": {
+          const kind = STATUS_KINDS[command];
+          const toggle = value.toLowerCase();
+          if (toggle !== "on" && toggle !== "off") {
+            return await message.sendReply(
+              Lang.USAGE_ON_OFF_CURRENTLY.format(name, command, conf?.[kind.field] ? Lang.ON_LOWER : Lang.OFF_LOWER)
+            );
+          }
+          if (toggle === "on" && (await needBotAdmin())) return;
+          conf = await antiStatusMention.set(message.jid, { [kind.field]: toggle === "on", ...by });
+          return await message.sendReply(
+            Lang.TURNED.format(kind.label, toggle === "on" ? Lang.ON_UPPER : Lang.OFF_UPPER, statusSummary(conf))
+          );
+        }
 
         case "action":
         case "mode": {
           const action = value.toLowerCase();
-          if (!STATUS_MENTION_ACTIONS[action]) {
+          if (!STATUS_ACTIONS[action]) {
             return await message.sendReply(
-              `_Choose what happens when someone mentions this group in a status:_\n\n` +
-                `• \`delete\` - delete the mention only\n` +
-                `• \`kick\` - kick the member only\n` +
-                `• \`both\` - delete the mention and kick the member\n\n` +
-                `_Usage:_ \`${name} action both\``
+              Lang.CHOOSE_WHAT_HAPPENS_TO_THE.format(name)
             );
           }
-          if (!(await isAdmin(message))) {
-            return await message.sendReply("_I'm not an admin!_");
-          }
-          conf = await antiStatusMention.set(message.jid, { action, enabled: true, ...by });
+          if (await needBotAdmin()) return;
+          conf = await antiStatusMention.set(message.jid, { action, ...by });
           return await message.sendReply(
-            `✅ *Action set to ${action.toUpperCase()}!*\n\n` +
-              `Will ${STATUS_MENTION_ACTIONS[action]} on a group status mention.`
+            Lang.ACTION_SET_TO_WILL.format(action.toUpperCase(), STATUS_ACTIONS[action], (!conf.enabled && !conf.postEnabled ? Lang.ANTI_STATUS_IS_STILL_OFF.format(name) : ""))
           );
         }
 
@@ -557,37 +537,23 @@ Module(
           const toggle = value.toLowerCase();
           if (toggle !== "on" && toggle !== "off") {
             return await message.sendReply(
-              `_Send a message in the group after acting?_\n\n` +
-                `_Usage:_ \`${name} reply on/off\`\n` +
-                `_Currently:_ ${conf?.replyEnabled ? "on" : "off"}`
+              Lang.SEND_A_MESSAGE_IN_THE.format(name, conf?.replyEnabled ? Lang.ON_LOWER : Lang.OFF_LOWER)
             );
           }
-          conf = await antiStatusMention.set(message.jid, {
-            replyEnabled: toggle === "on",
-            ...by,
-          });
-          return await message.sendReply(
-            `✅ *Reply turned ${toggle.toUpperCase()}!*` +
-              (toggle === "on" && !conf.enabled
-                ? `\n\n_Anti status mention is still off, use \`${name} on\`_`
-                : "")
-          );
+          conf = await antiStatusMention.set(message.jid, { replyEnabled: toggle === "on", ...by });
+          return await message.sendReply(Lang.REPLY_TURNED.format(toggle === "on" ? Lang.ON_UPPER : Lang.OFF_UPPER));
         }
 
         case "message":
         case "msg": {
           if (!value) {
             return await message.sendReply(
-              `_Set the reply sent after acting:_\n\n` +
-                `_Usage:_ \`${name} message Don't mention this group in statuses @user\`\n` +
-                `• \`@user\` becomes a mention of the member\n` +
-                `• \`${name} message reset\` goes back to the default\n\n` +
-                `_Current:_ ${conf?.customMessage || "Default"}`
+              Lang.SET_THE_REPLY_SENT_AFTER.format(name, name, conf?.customMessage || Lang.DEFAULT)
             );
           }
           if (["reset", "default"].includes(value.toLowerCase())) {
             await antiStatusMention.set(message.jid, { customMessage: null, ...by });
-            return await message.sendReply("🔄 *Reply text reset to the default!*");
+            return await message.sendReply(Lang.REPLY_TEXT_RESET_TO_THE);
           }
           conf = await antiStatusMention.set(message.jid, {
             customMessage: value,
@@ -595,53 +561,36 @@ Module(
             ...by,
           });
           return await message.sendReply(
-            `✅ *Reply text set, and reply turned ON!*\n\n*Message:* ${value}`
+            Lang.REPLY_TEXT_SET_AND_REPLY.format(value)
           );
         }
 
         case "reset":
           if (conf) await antiStatusMention.delete(message.jid);
-          return await message.sendReply("🔄 *Anti status mention settings reset!*");
+          return await message.sendReply(Lang.ANTI_STATUS_SETTINGS_RESET);
 
         case "help":
           return await message.sendReply(
-            `🛡️ *Anti Status Mention Help*\n\n` +
-              `_Acts when a member mentions this group in their status. ` +
-              `Admins and the owner are skipped, and the bot must be an admin._\n\n` +
-              `• \`${name} on/off\` - Enable/disable\n` +
-              `• \`${name} action delete/kick/both\` - What to do\n` +
-              `• \`${name} reply on/off\` - Send a message afterwards\n` +
-              `• \`${name} message <text>\` - Custom reply (\`@user\` mentions them)\n` +
-              `• \`${name} message reset\` - Default reply\n` +
-              `• \`${name} reset\` - Remove the settings\n` +
-              `• \`${name} status\` - View current settings`
+            Lang.ANTI_STATUS_HELP_ACTS_ON.format(name, name, name, name, name, name, name, name, name)
           );
 
         case "status":
         default: {
           const { subject } = await message.client.groupMetadata(message.jid);
-          const shown = conf || {
-            enabled: false,
-            action: "delete",
-            replyEnabled: false,
-            customMessage: null,
-          };
+          const shown = conf || { enabled: false, postEnabled: false, action: "delete", replyEnabled: false };
           return await message.sendReply(
-            `🛡️ *Anti Status Mention - ${subject}*\n\n${statusMentionSummary(shown)}\n\n` +
-              `_Use \`${name} help\` for all commands_`
+            Lang.ANTI_STATUS_USE_HELP_FOR.format(subject, statusSummary(shown), name)
           );
         }
       }
     } catch (error) {
-      console.error("Anti status mention error:", error);
-      return await message.sendReply(
-        "_An error occurred while updating anti status mention settings._"
-      );
+      console.error("Anti status error:", error);
+      return await message.sendReply(Lang.AN_ERROR_OCCURRED_WHILE_UPDATING_2);
     }
   }
 );
 
-const handledStatusMentions = new Set();
+const handledStatuses = new Set();
 
 Module(
   {
@@ -650,47 +599,52 @@ Module(
   },
   async (message) => {
     if (!message.isGroup || message.fromMe) return;
-    if (!message.data?.message?.groupStatusMentionMessage) return;
+    const kind = Object.values(STATUS_KINDS).find((k) => k.detect(message));
+    if (!kind) return;
 
     const conf = await antiStatusMention.get(message.jid);
-    if (!conf || !conf.enabled) return;
+    if (!conf || !conf[kind.field]) return;
 
     const poster = message.sender;
     if (!poster) return;
-    if (message.fromOwner || (await isAdmin(message, poster))) return;
+    // exempt on purpose; said out loud under DEBUG since a silent skip looks like a bug
+    const exempt = message.fromOwner ? Lang.OWNER_SUDO : (await isAdmin(message, poster)) ? Lang.GROUP_ADMIN : null;
+    if (exempt) {
+      if (debugOn()) console.log(`[antistatus] skipped ${poster} in ${message.jid}: ${exempt} is exempt`);
+      return;
+    }
     if (!(await isAdmin(message))) {
-      console.warn(`[antistatusmention] not an admin in ${message.jid}, cannot act`);
+      console.warn(`[antistatus] not an admin in ${message.jid}, cannot act`);
       return;
     }
 
     const handledKey = `${message.jid}:${message.id}`;
-    if (handledStatusMentions.has(handledKey)) return;
-    handledStatusMentions.add(handledKey);
-    if (handledStatusMentions.size > 500) {
-      handledStatusMentions.delete(handledStatusMentions.values().next().value);
+    if (handledStatuses.has(handledKey)) return;
+    handledStatuses.add(handledKey);
+    if (handledStatuses.size > 500) handledStatuses.delete(handledStatuses.values().next().value);
+
+    try {
+      await kind.remove(message);
+    } catch (error) {
+      console.error("Anti status delete error:", error);
     }
 
-    if (conf.action !== "kick") {
-      try {
-        await message.client.sendMessage(message.jid, { delete: message.data.key });
-      } catch (error) {
-        console.error("Anti status mention delete error:", error);
-      }
+    const number = poster.split("@")[0].split(":")[0];
+    const notice = (conf.customMessage || kind.defaultReply).replace(/@user/gi, `@${number}`);
+    const action = statusAction(conf.action);
+    if (action === "warn") {
+      // warnMember sends the notice with the warn count, and kicks at the limit
+      return await warnMember(message, poster, kind.warnReason, notice);
     }
-    if (conf.action !== "delete") {
+    if (action === "kick") {
       try {
         await message.client.groupParticipantsUpdate(message.jid, [poster], "remove");
       } catch (error) {
-        console.error("Anti status mention kick error:", error);
+        console.error("Anti status kick error:", error);
       }
     }
     if (conf.replyEnabled) {
-      const number = poster.split("@")[0].split(":")[0];
-      const text = (conf.customMessage || DEFAULT_STATUS_MENTION_REPLY).replace(
-        /@user/gi,
-        `@${number}`
-      );
-      await message.sendMessage(text, "text", { mentions: [poster] });
+      await message.sendMessage(notice, "text", { mentions: [poster] });
     }
   }
 );
@@ -699,7 +653,7 @@ Module(
   {
     pattern: "antiword ?(.*)",
     fromMe: false,
-    desc: "Activates antiword, kicks if user sends not allowed words",
+    desc: Lang.ACTIVATES_ANTIWORD_KICKS_IF_USER,
     use: "group",
   },
   async (message, match) => {
@@ -714,20 +668,20 @@ Module(
       if (match[1].includes("warn")) {
         if (match[1].endsWith("on")) {
           if (!(await isAdmin(message)))
-            return await message.sendReply("_I'm not an admin!_");
+            return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
           if (!antiwordWarn.includes(message.jid)) {
             antiwordWarn.push(message.jid);
             await setVar("ANTIWORD_WARN", antiwordWarn.join(","), false);
           }
           return await message.sendReply(
-            `_Antiword warn has been activated in this group!_`
+            Lang.ANTIWORD_WARN_HAS_BEEN_ACTIVATED
           );
         }
         if (match[1].endsWith("off")) {
           if (!(await isAdmin(message)))
-            return await message.sendReply("_I'm not an admin!_");
+            return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
           if (antiwordWarn.includes(message.jid)) {
-            await message.sendReply(`_Antiword warn deactivated!_`);
+            await message.sendReply(Lang.ANTIWORD_WARN_DEACTIVATED);
             return await setVar(
               "ANTIWORD_WARN",
               antiwordWarn.filter((x) => x != message.jid).join(","),
@@ -738,7 +692,7 @@ Module(
       }
       if (match[1] === "on") {
         if (!(await isAdmin(message)))
-          return await message.sendReply("_I'm not an admin!_");
+          return await message.sendReply(Lang.IM_NOT_AN_ADMIN);
         await antiword.set(message.jid);
       }
       if (match[1] === "off") {
@@ -752,20 +706,11 @@ Module(
         var { subject } = await message.client.groupMetadata(message.jid);
         const p = helpPrefix();
         return await message.sendReply(
-          `_Antiword menu of ${subject}_` +
-            "\n\n_Antiword is currently turned *" +
-            status +
-            "*_\n\n_Eg: " +
-            p +
-            "antiword on/off_\n_" +
-            p +
-            "antiword warn on/off_\n\n_Use `" +
-            p +
-            "setvar ANTI_WORDS=word1,word2` to block custom words or set `ANTI_WORDS=auto` to auto detect bad words (It's already enabled by default!)_"
+          Lang.ANTIWORD_MENU_OF_ANTIWORD_IS.format(subject, status).replaceAll("{p}", helpPrefix())
         );
       }
       await message.sendReply(
-        match[1] === "on" ? "_Antiword activated!_" : "_Antiword turned off!_"
+        match[1] === "on" ? Lang.ANTIWORD_ACTIVATED : Lang.ANTIWORD_TURNED_OFF
       );
     }
   }
@@ -784,31 +729,22 @@ async function warnMember(message, usr, reason, notice) {
       try {
         await message.client.groupParticipantsUpdate(message.jid, [usr], "remove");
         await message.sendMessage(
-          `${notice}\n\n` +
-            `*Action:* User kicked for exceeding warning limit\n` +
-            `*Warnings:* ${current}/${warnLimit}`,
+          Lang.ACTION_USER_KICKED_FOR_EXCEEDING.format(notice, current, warnLimit),
           "text",
           { mentions: [usr] }
         );
       } catch (kickError) {
         await message.sendMessage(
-          `${notice}\n\n` +
-            `*Warnings:* ${current}/${warnLimit}\n` +
-            `*Error:* Failed to kick user`,
+          Lang.WARNINGS_ERROR_FAILED_TO_KICK.format(notice, current, warnLimit),
           "text",
           { mentions: [usr] }
         );
       }
     } else {
       await message.sendMessage(
-        `${notice}\n\n` +
-          `*Warnings:* ${current}/${warnLimit}\n` +
-          `*Remaining:* ${remaining}\n\n` +
-          `${
-            remaining === 1
-              ? "_Next violation will result in a kick!_"
-              : `_${remaining} more warnings before kick._`
-          }`,
+        Lang.WARNINGS_REMAINING.format(notice, current, warnLimit, remaining, remaining === 1
+              ? Lang.NEXT_VIOLATION_WILL_RESULT_IN
+              : Lang.MORE_WARNINGS_BEFORE_KICK.format(remaining)),
         "text",
         { mentions: [usr] }
       );
@@ -835,9 +771,9 @@ async function checkAntiword(message) {
   if (!word) return false;
   if (message.fromOwner || (await isAdmin(message, message.sender))) return false;
 
-  const notice = `_The word ${word} is not allowed in this chat!_`;
+  const notice = Lang.WORD_NOT_ALLOWED.format(word);
   if (warnMode) {
-    await warnMember(message, message.sender, "Sending a disallowed word", notice);
+    await warnMember(message, message.sender, Lang.REASON_WORD, notice);
   } else {
     await message.sendReply(notice);
     try {
@@ -876,25 +812,25 @@ async function checkAntilink(message) {
   });
   const customMessage =
     antilinkConf.customMessage ||
-    `⚠️ *Link Detected!*\n\n_Links are not allowed in this group._`;
+    Lang.LINK_DETECTED;
 
   if (antilinkConf.mode === "delete") {
     await message.sendMessage(customMessage, "text", {
       mentions: [usr],
     });
   } else if (antilinkConf.mode === "warn") {
-    await warnMember(message, usr, "Sending unauthorized link", customMessage);
+    await warnMember(message, usr, Lang.REASON_LINK, customMessage);
   } else if (antilinkConf.mode === "kick") {
     try {
       await message.client.groupParticipantsUpdate(message.jid, [usr], "remove");
       await message.sendMessage(
-        `${customMessage}\n\n*Action:* User kicked for sending unauthorized link`,
+        Lang.ACTION_USER_KICKED_FOR_SENDING.format(customMessage),
         "text",
         { mentions: [usr] }
       );
     } catch (kickError) {
       await message.sendMessage(
-        `${customMessage}\n\n*Error:* Failed to kick user`,
+        Lang.ERROR_FAILED_TO_KICK_USER.format(customMessage),
         "text",
         { mentions: [usr] }
       );

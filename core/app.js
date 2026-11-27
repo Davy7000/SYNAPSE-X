@@ -23,7 +23,9 @@ function buildStatus(manager) {
     sessions: [...(manager?.bots?.values() || [])].map((bot, i) => ({
       session: i + 1,
       connected: Boolean(bot.isConnected),
-      lastOpenAt: bot.lastOpenAt ? new Date(bot.lastOpenAt).toISOString() : null,
+      lastOpenAt: bot.lastOpenAt
+        ? new Date(bot.lastOpenAt).toISOString()
+        : null,
       reconnectAttempts: bot.reconnectAttempts,
       loggedOut: Boolean(bot.loggedOut),
       stopReason: bot.stopReason || null,
@@ -47,7 +49,7 @@ function createServer(manager) {
       res.end(JSON.stringify(buildStatus(manager)));
     } else {
       res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  Bot is running!");
+      res.end("𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모   Bot is running!");
     }
   });
 }
@@ -58,8 +60,10 @@ async function boot() {
   ensureTempDir();
   startTempSweeper();
   logger.info(`Created temporary directory at ${TEMP_DIR}`);
-  console.log(`𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  v${require("../package.json").version}`);
-  console.log(`- Configured sessions: ${SESSION.join(", ")}\n- For multiple sessions, set SESSION=session1,session2,session3`);
+  console.log(`𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  -MD v${require("../package.json").version}`);
+  console.log(
+    `- Configured sessions: ${SESSION.join(", ")}\n- For multiple sessions, set SESSION=session1,session2,session3`,
+  );
   logger.info(`Configured sessions: ${SESSION.join(", ")}`);
   if (SESSION.length === 0) {
     const warnMsg =
@@ -76,11 +80,11 @@ async function boot() {
   } catch (dbError) {
     console.error(
       "🚫 Failed to initialize database or load configuration. Bot cannot start.",
-      dbError
+      dbError,
     );
     logger.fatal(
       { err: dbError },
-      "🚫 Failed to initialize database or load configuration. Bot cannot start."
+      "🚫 Failed to initialize database or load configuration. Bot cannot start.",
     );
     throw dbError;
   }

@@ -19,7 +19,7 @@ const prefixOf = (cfg) =>
 function buildStartMessage(config) {
   const p = prefixOf(config);
   return (
-    `*_𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  started!_*\n\n` +
+    `*_𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모   started!_*\n\n` +
     `_Version:_ *v${version}*\n` +
     `_Mode:_ *${capitalizeFirstLetter(config.MODE || "private")}*\n` +
     `_Language:_ *${capitalizeFirstLetter(config.LANGUAGE || "english")}*\n` +
@@ -28,10 +28,23 @@ function buildStartMessage(config) {
   );
 }
 
-// goes to the first setsudo entry (SUDO_MAP lid), else the bot's own lid
+function buttonsTip(cfg) {
+  if (
+    typeof cfg.isDynamic !== "function" ||
+    cfg.isDynamic("BUTTONS") ||
+    process.env.BUTTONS !== undefined
+  )
+    return "";
+  const { getString } = require("../../plugins/utils/lang");
+  return getString("start_message").BUTTONS_TIP.replaceAll(
+    "{p}",
+    prefixOf(cfg),
+  );
+}
+
 async function sendStartMessage(sock, cfg = config) {
   const target = ownerTarget(sock);
-  const text = buildStartMessage(cfg);
+  const text = buildStartMessage(cfg) + buttonsTip(cfg);
   if (cfg.BUTTONS === true) {
     const p = prefixOf(cfg);
     return await ui.sendButtons(
@@ -51,4 +64,4 @@ async function sendStartMessage(sock, cfg = config) {
   await sock.sendMessage(target, { text });
 }
 
-module.exports = { buildStartMessage, sendStartMessage };
+module.exports = { buildStartMessage, buttonsTip, sendStartMessage };

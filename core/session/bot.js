@@ -10,6 +10,8 @@ const { wireEvents } = require("./events");
 const { planReconnect, SLOW_RETRY_MS, SLOW_RETRY_LOG_EVERY_MS } = require("./reconnect");
 const { attachSocketFeatures } = require("./features");
 const { handleAntiDelete } = require("./features/antidelete");
+const { isLocalSession, chooseLoginMethod } = require("./terminal-login");
+const { isHatchedId } = require("./hatchery");
 
 class WhatsAppBot {
   get maxReconnectAttempts() {
@@ -36,11 +38,15 @@ class WhatsAppBot {
     this.loggedOut = false;
     this.stopReason = null;
     this.lastSlowRetryLogAt = 0;
+    this.loginMethod = null;
+    // set by core/session/hatchery.js while a chat-started link is running
+    this.hatch = null;
 
     const caches = createSessionCaches();
     this.groupCache = caches.groupCache;
     this.contactCache = caches.contactCache;
     this.messageCache = caches.messageCache;
+    this.revokedIds = caches.revokedIds;
   }
 
   _teardownSocket() {
@@ -114,9 +120,10 @@ class WhatsAppBot {
         console.log(`- [${this.sessionId}] Initializing bot...`);
       }
       this.authState = new CustomAuthState(this.sessionId);
+      const local = isLocalSession(this.sessionId);
       let sessionLoaded = false;
       try {
-        await this.authState.loadSession();
+        await this.authState.loadSession({ skipBackend: local });
         sessionLoaded = Object.keys(this.authState.creds).length > 0;
       } catch (error) {
         logger.warn(
@@ -126,6 +133,22 @@ class WhatsAppBot {
         console.warn(
           `⚠️ Failed to load session from database: ${this.sessionId}`,
         );
+      }
+      if (local && !this.authState.isLinked()) {
+        // a saved hatched bot can only be linked again from chat, never the terminal
+        if (isHatchedId(this.sessionId) && !this.hatch) {
+          throw new Error(
+            `Hatched bot ${this.sessionId} has no stored login. Link it again with the hatch command.`,
+          );
+        }
+        // keep the identity of a link attempt that's still running
+        if (!this.loginMethod || !sessionLoaded) {
+          this.loginMethod = this.hatch?.method || (await chooseLoginMethod(this.sessionId));
+          this.authState.startFresh();
+        } else {
+          this.authState.dropPairingPlaceholder();
+        }
+        sessionLoaded = true;
       }
       if (!sessionLoaded) {
         throw new Error(

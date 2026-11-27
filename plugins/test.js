@@ -6,59 +6,75 @@ function TimeCalculator(a) {
     f = Math.floor((a % 3600) / 60),
     g = Math.floor(a % 60);
   return (
-    (b > 0 ? b + (1 === b ? " year, " : " years, ") : "") +
-    (c > 0 ? c + (1 === c ? " month, " : " months, ") : "") +
-    (d > 0 ? d + (1 === d ? " day, " : " days, ") : "") +
-    (e > 0 ? e + (1 === e ? " hour, " : " hours, ") : "") +
-    (f > 0 ? f + (1 === f ? " minute " : " minutes, ") : "") +
-    (g > 0 ? g + (1 === g ? " second" : " seconds ") : "")
+    (b > 0 ? b + (1 === b ? Lang.YEAR : Lang.YEARS) : "") +
+    (c > 0 ? c + (1 === c ? Lang.MONTH : Lang.MONTHS) : "") +
+    (d > 0 ? d + (1 === d ? Lang.DAY : Lang.DAYS) : "") +
+    (e > 0 ? e + (1 === e ? Lang.HOUR : Lang.HOURS) : "") +
+    (f > 0 ? f + (1 === f ? Lang.MINUTE : Lang.MINUTES) : "") +
+    (g > 0 ? g + (1 === g ? Lang.SECOND : Lang.SECONDS) : "")
   );
 }
 const { Module } = require("../main");
+const { getString } = require("./utils/lang");
+const Lang = getString("test");
+
+// dd/mm/yyyy or dd-mm-yyyy as a local date, null when it is not a real day
+function parseDate(text) {
+  const parts = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/.exec(String(text).trim());
+  if (!parts) return null;
+  const [day, month, year] = parts.slice(1).map(Number);
+  const date = new Date(year, month - 1, day);
+  const real =
+    date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  return real ? date : null;
+}
+const BAD_DATE = Lang.BAD_DATE;
 Module(
   {
     pattern: "age ?(.*)",
-    desc: "Age calculator .age dob",
+    desc: Lang.AGE_DESC,
     use: "utility",
   },
   async (m, t) => {
-    if (!t[1]) return await m.sendReply("_Give me your Date of Birth_");
-    if (
-      !/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(t[1])
-    )
-      return await m.sendReply("_Date must be in dd/mm/yy format_");
-    var DOB = t[1];
-    var actual = DOB.includes("-")
-      ? DOB.split("-")[1] + "-" + DOB.split("-")[0] + "-" + DOB.split("-")[2]
-      : DOB.split("/")[1] + "-" + DOB.split("/")[0] + "-" + DOB.split("/")[2];
-    var dob = new Date(actual).getTime();
-    var today = new Date().getTime();
-    var age = (today - dob) / 1000;
+    if (!t[1]) return await m.sendReply(Lang.NEED_DOB);
+    const dob = parseDate(t[1]);
+    if (!dob) return await m.sendReply(BAD_DATE);
+    var age = (Date.now() - dob.getTime()) / 1000;
+    if (age < 0) return await m.sendReply(Lang.DOB_PAST);
     return await m.sendReply("```" + TimeCalculator(age) + "```");
+  }
+);/*
+Module(
+  {
+    pattern: "cntd ?(.*)",
+    desc: Lang.CNTD_DESC,
+    use: "utility",
+  },
+  async (m, t) => {
+    if (!t[1]) return await m.sendReply(Lang.NEED_FUTURE);
+    const target = parseDate(t[1]);
+    if (!target) return await m.sendReply(BAD_DATE);
+    var remaining = (target.getTime() - Date.now()) / 1000;
+    if (remaining < 0) return await m.sendReply(Lang.NEED_FUTURE);
+    return await m.sendReply(Lang.REMAINING.format(TimeCalculator(remaining)));
   }
 );
 Module(
   {
-    pattern: "cntd ?(.*)",
-    desc: "Counts Date",
+    pattern: "ping",
     use: "utility",
+    desc: Lang.PING_DESC,
   },
-  async (m, t) => {
-    if (!t[1]) return await m.sendReply("_Give me a future date!_");
-    if (
-      !/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(t[1])
-    )
-      return await m.sendReply("_Date must be in dd/mm/yy format_");
-    var DOB = t[1];
-    var actual = DOB.includes("-")
-      ? DOB.split("-")[1] + "-" + DOB.split("-")[0] + "-" + DOB.split("-")[2]
-      : DOB.split("/")[1] + "-" + DOB.split("/")[0] + "-" + DOB.split("/")[2];
-    var dob = new Date(actual).getTime();
-    var today = new Date().getTime();
-    var age = (dob - today) / 1000;
-    return await m.sendReply("_" + TimeCalculator(age) + " remaining_");
+  async (message, match) => {
+    const start = process.hrtime();
+    let sent_msg = await message.sendReply(Lang.PING_TESTING);
+    const diff = process.hrtime(start);
+    const ms = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(2);
+    await message.edit(Lang.PING_LATENCY.format(ms), message.jid, sent_msg.key);
   }
 );
+module.exports = { parseDate };*/
+;
 Module({
     pattern: 'ping',
     desc: 'Interface système complète avec audio PTT',
@@ -92,7 +108,7 @@ Module({
         const uptime = Math.floor(process.uptime() / 3600);
 
         const finalInterface = `
-╭───〖 *S Y N A P S E - X* 〗───
+╭〖 *S Y N A P S E - X* 〗─
 │
 │  🚀 *Vitesse* : \_${latence} ms\_
 │
@@ -102,7 +118,7 @@ Module({
 │
 │  ⏳ *Uptime* : \_${uptime}h active\_
 │
-╰─────────────────────
+╰───────────────
 
 > *Système en mode Hyper-Drive* ⚡`.trim();
 
@@ -118,4 +134,4 @@ Module({
         await message.react('❌');
         await message.sendReply(`_Erreur :_ \`${e.message}\``);
     }
-});
+});                           

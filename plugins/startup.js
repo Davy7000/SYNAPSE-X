@@ -36,16 +36,26 @@ Module({
 const rawLang = (config.LANGUAGE || 'english').toLowerCase();
 
 // 2. On configure l'affichage et le drapeau selon ce que contient la variable
-let botLang = 'English';
-let langFlag = '🇬🇧';
+// Langue définie dans config.js
+/*const rawLang = String(config.LANGUAGE || 'english').trim().toLowerCase();*/
 
-if (rawLang.includes('french') || rawLang.includes('fr')) {
-    botLang = 'French';
-    langFlag = '🇫🇷';
-} else if (rawLang.includes('spanish') || rawLang.includes('es')) {
-    botLang = 'Turkish';
-    langFlag = '🇹🇷';
-}
+// [nom affiché, drapeau, valeurs acceptées]
+const languages = [
+    ['Brazilian', '🇧🇷', ['brazilian', 'portuguese', 'pt', 'pt-br', 'pt_br']],
+    ['Chinese', '🇨🇳', ['chinese', 'zh', 'zh-cn', 'zh_cn']],
+    ['English', '🇬🇧', ['english', 'en']],
+    ['French', '🇫🇷', ['french', 'français', 'francais', 'fr']],
+    ['Hinglish', '🇮🇳', ['hinglish']],
+    ['Indonesian', '🇮🇩', ['indonesian', 'id']],
+    ['Manglish', '🇮🇳', ['manglish']],
+    ['Spanish', '🇪🇸', ['spanish', 'español', 'espanol', 'es']],
+    ['Turkish', '🇹🇷', ['turkish', 'tr']]
+];
+
+const found = languages.find(([, , aliases]) => aliases.includes(rawLang));
+
+// Une valeur inconnue est signalée au lieu d'être affichée comme English
+const [botLang, langFlag] = found || [`Inconnue (${rawLang})`, '🌐'];
         //message et lien 
         const texte = ` ${botName} et merci d'avoir choisi  𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 un bot multitâche et facile à déployer.`;
         // 3. Configuration du texte (qui servira de description à l'image)

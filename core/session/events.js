@@ -4,10 +4,16 @@ const { groupUpdate, handler } = require("../handler");
 const { handleCall } = require("./features/calls");
 const { ANTI_DELETE_MODES } = require("./features/antidelete");
 const { readEncryptedEdit } = require("./features/message-edit");
-const { bridgeStatusStanzas } = require("./features/status-stanza");
+const { bridgeStatusStanzas, logGroupFrames } = require("./features/status-stanza");
+const { debugOn } = require("../helpers");
+const { trackOwnChannelPosts, markOwnChannelPost, patchChannelSend } = require("./features/channels");
+const { forgetRevoked } = require("./features/revoke-guard");
 
 function wireEvents(bot) {
   bridgeStatusStanzas(bot.sock);
+  logGroupFrames(bot.sock);
+  trackOwnChannelPosts(bot.sock);
+  patchChannelSend(bot.sock);
   bot._on("creds.update", async (newCreds) => {
     try {
       logger.info(
@@ -49,14 +55,20 @@ function wireEvents(bot) {
 
   bot._on("messages.upsert", async (upsert) => {
     for (const message of upsert.messages) {
+      markOwnChannelPost(message);
+      forgetRevoked(bot, message);
       if (message.key && message.key.id && message.key.remoteJid) {
         const cacheKey = `${message.key.remoteJid}_${message.key.id}`;
         bot.messageCache.set(cacheKey, message);
       }
     }
     // DEBUG: log statuses before anything drops them; undecryptable ones never reach [msg]
-    if (config.DEBUG === true || config.DEBUG === "true") {
+    if (debugOn()) {
       for (const m of upsert.messages) {
+        if (m.key?.remoteJid?.endsWith("@newsletter")) {
+          console.log(`[channel] ${upsert.type} ${JSON.stringify({ key: m.key, message: m.message })}`.slice(0, 1500));
+          continue;
+        }
         if (m.key?.remoteJid !== "status@broadcast") continue;
         const content = m.message ? Object.keys(m.message).join(",") : "no content";
         const stub = m.messageStubType ? ` stub ${m.messageStubType}: ${(m.messageStubParameters || []).join(", ")}` : "";

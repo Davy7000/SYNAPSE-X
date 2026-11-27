@@ -5,8 +5,14 @@ const { Readable } = require("stream");
 const ffmpeg = require("fluent-ffmpeg");
 
 // process-wide ffmpeg guard: caps concurrent encodes and adds a kill timeout
-const FFMPEG_CONCURRENCY = Math.max(1, parseInt(process.env.FFMPEG_CONCURRENCY || "2", 10) || 2);
-const FFMPEG_TIMEOUT_S = Math.max(30, parseInt(process.env.FFMPEG_TIMEOUT || "600", 10) || 600);
+const FFMPEG_CONCURRENCY = Math.max(
+  1,
+  parseInt(process.env.FFMPEG_CONCURRENCY || "2", 10) || 2,
+);
+const FFMPEG_TIMEOUT_S = Math.max(
+  30,
+  parseInt(process.env.FFMPEG_TIMEOUT || "600", 10) || 600,
+);
 (function limitFfmpeg() {
   const proto = ffmpeg.prototype;
   if (proto.__rgnkLimited) return;
@@ -22,36 +28,39 @@ const FFMPEG_TIMEOUT_S = Math.max(30, parseInt(process.env.FFMPEG_TIMEOUT || "60
     }
   };
 
-  proto.run = proto.exec = proto.execute = function (...args) {
-    if (!this.options.timeout) this.options.timeout = FFMPEG_TIMEOUT_S;
-    let released = false;
-    const release = () => {
-      if (released) return;
-      released = true;
-      active--;
-      next();
-    };
-    this.once("end", release);
-    this.once("error", release);
+  proto.run =
+    proto.exec =
+    proto.execute =
+      function (...args) {
+        if (!this.options.timeout) this.options.timeout = FFMPEG_TIMEOUT_S;
+        let released = false;
+        const release = () => {
+          if (released) return;
+          released = true;
+          active--;
+          next();
+        };
+        this.once("end", release);
+        this.once("error", release);
 
-    let queued = false;
-    const start = () => {
-      try {
-        originalRun.apply(this, args);
-      } catch (err) {
-        // started right away: throw to the caller like before. started later: report via event
-        if (!queued) {
-          release();
-          throw err;
-        }
-        this.emit("error", err);
-      }
-    };
-    waiting.push(start);
-    next();
-    if (waiting.includes(start)) queued = true;
-    return this;
-  };
+        let queued = false;
+        const start = () => {
+          try {
+            originalRun.apply(this, args);
+          } catch (err) {
+            // started right away: throw to the caller like before. started later: report via event
+            if (!queued) {
+              release();
+              throw err;
+            }
+            this.emit("error", err);
+          }
+        };
+        waiting.push(start);
+        next();
+        if (waiting.includes(start)) queued = true;
+        return this;
+      };
 })();
 
 function uniqueTempPath(name) {
@@ -76,7 +85,7 @@ if (process.env.TEMP_DIR) {
   TEMP_DIR = process.env.TEMP_DIR;
   os.tmpdir = () => path.join(__dirname, "..", TEMP_DIR);
 } else {
-  TEMP_DIR = path.join(os.tmpdir(), "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모 ");
+  TEMP_DIR = path.join(os.tmpdir(), "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  ");
 }
 
 function ensureTempDir() {
@@ -132,14 +141,16 @@ function startTempSweeper() {
 async function loadBaileys() {
   try {
     const baileys = await import("baileys");
+    require("./session/features/proto-ext").install(baileys.proto);
     return baileys;
   } catch (err) {
     try {
       const baileys = require("baileys");
+      require("./session/features/proto-ext").install(baileys.proto);
       return baileys;
     } catch (requireErr) {
       throw new Error(
-        `Failed to load baileys: ${err.message}. Fallback error: ${requireErr.message}`
+        `Failed to load baileys: ${err.message}. Fallback error: ${requireErr.message}`,
       );
     }
   }
@@ -155,7 +166,7 @@ function suppressLibsignalLogs() {
           "node_modules",
           "libsignal",
           "src",
-          file
+          file,
         );
         if (fs.existsSync(filePath)) {
           let content = fs.readFileSync(filePath, "utf8");
@@ -163,7 +174,7 @@ function suppressLibsignalLogs() {
           if (content !== modified)
             fs.writeFileSync(filePath, modified, "utf8");
         }
-      }
+      },
     );
   } catch {}
 }
@@ -203,7 +214,7 @@ async function pingHostname(url) {
   try {
     const response = await fetch(url, {
       signal: AbortSignal.timeout(8000),
-      headers: { "User-Agent": "SYNAPSE-X-KickBot/1.0" },
+      headers: { "User-Agent": "𝐒𝐘𝐍𝐀𝐏𝐒𝐄-𝐗 모  -KickBot/1.0" },
     });
     if (response.ok) {
       return true;
@@ -224,7 +235,7 @@ async function initializeKickBot() {
 
   const intervalId = setInterval(
     () => Promise.allSettled(hostnames.map(pingHostname)),
-    8 * 60 * 1000
+    8 * 60 * 1000,
   );
 
   activeKickBotTasks.push(intervalId);
@@ -236,19 +247,31 @@ function cleanupKickBot() {
   isKickBotInitialized = false;
 }
 
-function convertToOgg(inputBuffer) {
-  return new Promise((resolve, reject) => {
-    const inputStream = Readable.from(inputBuffer);
-    const outputStream = ffmpeg(inputStream)
-      .audioCodec("libopus")
-      .format("ogg")
-      .pipe();
-
-    const chunks = [];
-    outputStream.on("data", (chunk) => chunks.push(chunk));
-    outputStream.on("end", () => resolve(Buffer.concat(chunks)));
-    outputStream.on("error", reject);
-  });
+// voice: mono like wa voice notes, ios won't play stereo
+async function convertToOgg(inputBuffer, { voice = false } = {}) {
+  // file input: piped mp4/m4a can't seek to the index
+  const input = uniqueTempPath("ogg-in");
+  await fs.promises.writeFile(input, inputBuffer);
+  try {
+    return await new Promise((resolve, reject) => {
+      let command = ffmpeg(input).noVideo().audioCodec("libopus");
+      if (voice) {
+        command = command
+          .audioChannels(1)
+          .audioFrequency(48000)
+          .audioBitrate("32k")
+          .outputOptions(["-application", "voip", "-map_metadata", "-1"]);
+      }
+      command.on("error", reject);
+      const outputStream = command.format("ogg").pipe();
+      const chunks = [];
+      outputStream.on("data", (chunk) => chunks.push(chunk));
+      outputStream.on("end", () => resolve(Buffer.concat(chunks)));
+      outputStream.on("error", reject);
+    });
+  } finally {
+    fs.promises.unlink(input).catch(() => {});
+  }
 }
 
 async function toBuffer(input) {
@@ -266,6 +289,13 @@ async function toBuffer(input) {
   }
   if (typeof input === "string" && fs.existsSync(input))
     return fs.readFileSync(input);
+  const stream =
+    input?.stream || (typeof input?.pipe === "function" ? input : null);
+  if (stream?.[Symbol.asyncIterator]) {
+    const chunks = [];
+    for await (const chunk of stream) chunks.push(chunk);
+    return Buffer.concat(chunks);
+  }
   const d = input && (input.data || input.buffer);
   if (Buffer.isBuffer(d)) return d;
   if (Array.isArray(d)) return Buffer.from(d);
@@ -314,7 +344,7 @@ function validateAuthoringButtons(buttons) {
     warnings.push("buttons array is empty");
   } else if (buttons.length > SOFT_BUTTON_CAP) {
     warnings.push(
-      `buttons count (${buttons.length}) exceeds soft cap of ${SOFT_BUTTON_CAP}; may be rejected by client`
+      `buttons count (${buttons.length}) exceeds soft cap of ${SOFT_BUTTON_CAP}; may be rejected by client`,
     );
   }
 
@@ -331,7 +361,7 @@ function validateAuthoringButtons(buttons) {
           JSON.parse(b.buttonParamsJson);
         } catch (e) {
           errors.push(
-            `button[${idx}] buttonParamsJson is not valid JSON: ${e.message}`
+            `button[${idx}] buttonParamsJson is not valid JSON: ${e.message}`,
           );
         }
       }
@@ -340,7 +370,7 @@ function validateAuthoringButtons(buttons) {
     if (b.id || b.text || b.displayText) {
       if (!(b.id || b.text || b.displayText)) {
         errors.push(
-          `button[${idx}] legacy shape missing id or text/displayText`
+          `button[${idx}] legacy shape missing id or text/displayText`,
         );
       }
       return b;
@@ -356,13 +386,13 @@ function validateAuthoringButtons(buttons) {
     if (b.buttonParamsJson) {
       if (typeof b.buttonParamsJson !== "string") {
         warnings.push(
-          `button[${idx}] has non-string buttonParamsJson; will attempt to stringify`
+          `button[${idx}] has non-string buttonParamsJson; will attempt to stringify`,
         );
         try {
           b.buttonParamsJson = JSON.stringify(b.buttonParamsJson);
         } catch {
           errors.push(
-            `button[${idx}] buttonParamsJson could not be serialized`
+            `button[${idx}] buttonParamsJson could not be serialized`,
           );
         }
       } else {
@@ -370,7 +400,7 @@ function validateAuthoringButtons(buttons) {
           JSON.parse(b.buttonParamsJson);
         } catch (e) {
           warnings.push(
-            `button[${idx}] buttonParamsJson not valid JSON (${e.message})`
+            `button[${idx}] buttonParamsJson not valid JSON (${e.message})`,
           );
         }
       }
@@ -380,7 +410,9 @@ function validateAuthoringButtons(buttons) {
       }
       return b;
     }
-    warnings.push(`button[${idx}] unrecognized shape; passing through unchanged`);
+    warnings.push(
+      `button[${idx}] unrecognized shape; passing through unchanged`,
+    );
     return b;
   });
 
@@ -415,7 +447,9 @@ function validateInteractiveMessageContent(content) {
       return;
     }
     if (!btn.buttonParamsJson) {
-      warnings.push(`buttons[${i}] missing buttonParamsJson (may fail to render)`);
+      warnings.push(
+        `buttons[${i}] missing buttonParamsJson (may fail to render)`,
+      );
     } else if (typeof btn.buttonParamsJson !== "string") {
       errors.push(`buttons[${i}] buttonParamsJson must be string`);
     } else {
@@ -423,7 +457,7 @@ function validateInteractiveMessageContent(content) {
         JSON.parse(btn.buttonParamsJson);
       } catch (e) {
         warnings.push(
-          `buttons[${i}] buttonParamsJson invalid JSON (${e.message})`
+          `buttons[${i}] buttonParamsJson invalid JSON (${e.message})`,
         );
       }
     }
@@ -494,7 +528,15 @@ function getButtonArgs(message) {
   }
 }
 
+const frameDebugOn = () => require("../config").DEBUG === "frame";
+const debugOn = () => {
+  const value = require("../config").DEBUG;
+  return value === true || value === "true" || value === "frame";
+};
+
 module.exports = {
+  debugOn,
+  frameDebugOn,
   loadBaileys,
   suppressLibsignalLogs,
   genThumb,

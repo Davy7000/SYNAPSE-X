@@ -8,7 +8,7 @@ Module(
   {
     pattern: 'kill ?(.*)',
     fromMe: true,
-    use: 'owner',
+    use: 'Twilight',
     desc: 'Déconnecte le bot des appareils connectés WhatsApp et supprime la session locale.',
   },
   async (message, match) => {
@@ -23,7 +23,7 @@ Module(
       }
 
       await message.react('💀');
-      await message.sendReply('🔌 *Déconnexion en cours de WhatsApp (Appareils connectés)...*');
+      await message.sendReply('🔌 *Déconnecter de WhatsApp*');
 
       const sock = message.client;
       const sessionDir = path.join(__dirname, '../session');

@@ -2,16 +2,19 @@ const { Module } = require("../main");
 const { isAdmin } = require("./utils");
 const { ownerTarget } = require("../core/identity");
 const { getFullMessage, hasPendingWrites, flushPendingWrites } = require("../core/store");
-const { extractViewOnce } = require("./utils/viewonce");
+const { extractViewOnce, hasViewOnceContent } = require("./utils/viewonce");
+const { findStickerAudio, sendStickerAudio } = require("../core/session/features/new-media");
+const { getString } = require("./utils/lang");
+const Lang = getString("wamsg");
 
 // newer WhatsApp quotes view-once as a stub with no key/link to download from
 const hasMediaDetails = (node) => Boolean(node && (node.mediaKey || node.url || node.directPath));
 
 async function reportVVFailure(m, reason) {
-  const where = m.isGroup ? `group ${m.jid.split("@")[0]}` : m.jid.split("@")[0];
+  const where = m.isGroup ? Lang.GROUP.format(m.jid.split("@")[0]) : m.jid.split("@")[0];
   try {
     await m.client.sendMessage(ownerTarget(m.client), {
-      text: `*_.vv could not save a view once message_*\n\n_Chat:_ ${where}\n_Reason:_ ${reason}`,
+      text: Lang.VV_FAILED.format(where, reason),
     });
   } catch (_) {
   }
@@ -27,7 +30,7 @@ async function recoverFromStore(id) {
       const full = await getFullMessage(id);
       if (full?.found) {
         const vv = extractViewOnce(full.messageData?.message);
-        return vv && hasMediaDetails(vv.message[vv.type]) ? vv : null;
+        return hasViewOnceContent(vv) ? vv : null;
       }
       if (!hasPendingWrites() || Date.now() >= deadline) return null;
       await flushPendingWrites();
@@ -38,8 +41,8 @@ async function recoverFromStore(id) {
   }
 }
 
-const STUB_REASON =
-  "WhatsApp quoted the message without its media details, and the original was not found in the saved messages (it may be older than 48 hours, or it never arrived with its media). Set the browser to android (`.autovv here` offers to do it), and view once messages are saved as soon as they arrive.";
+const TEXT_STUB_REASON = Lang.TEXT_STUB_REASON;
+const STUB_REASON = Lang.STUB_REASON;
 Module(
   {
     pattern: "react ?(.*)",
@@ -47,7 +50,7 @@ Module(
     use: "whatsapp",
   },
   async (m, t) => {
-    if (!m.quoted) return await m.sendReply("_Reply to a message_");
+    if (!m.quoted) return await m.sendReply(Lang.NEED_REPLY);
     await m.client.sendMessage(m.jid, {
       react: { text: t[1], key: m.quoted.key },
     });
@@ -66,17 +69,25 @@ Module(
   }
 );
 const forwardTo = (command, forwarded) => async (m, t) => {
-  if (!m.reply_message) return await m.sendReply("_Reply to a message_");
+  if (!m.reply_message) return await m.sendReply(Lang.NEED_REPLY);
   const query = t[1] || m.jid;
   const jidMap = query.split(" ").filter((x) => x.includes("@"));
   if (!jidMap.length) {
     return await m.sendReply(
-      `_No valid JID found in the query, use \`${command} jid1 jid2 ...\`_`
+      Lang.NO_JID.format(command)
     );
   }
   const contextInfo = forwarded
     ? { isForwarded: true, forwardingScore: 2 }
     : { isForwarded: false };
+  // a forwarded copy of the quote would lose the audio, so audio stickers are sent again
+  const audio = m.reply_message.sticker && (await findStickerAudio(m.reply_message));
+  if (audio) {
+    const sticker = await m.reply_message.download("buffer");
+    const emojis = m.reply_message.data.message?.stickerMessage?.emojis;
+    for (const jid of jidMap) await sendStickerAudio(m.client, jid, sticker, audio.audioMessage, { emojis });
+    return;
+  }
   for (const jid of jidMap) {
     await m.forwardMessage(jid, m.quoted, { contextInfo });
   }
@@ -85,7 +96,7 @@ Module(
   {
     pattern: "send ?(.*)",
     fromMe: true,
-    desc: "Forwards replied message to the given jid",
+    desc: Lang.FORWARD_DESC,
     use: "whatsapp",
   },
   forwardTo("send", false)
@@ -94,7 +105,7 @@ Module(
   {
     pattern: "forward ?(.*)",
     fromMe: true,
-    desc: "Forwards replied message to the given jid",
+    desc: Lang.FORWARD_DESC,
     use: "whatsapp",
   },
   forwardTo("forward", true)
@@ -103,15 +114,15 @@ Module(
   {
     pattern: "retry ?(.*)",
     fromMe: true,
-    desc: "Retries replied command to run the command again",
+    desc: Lang.RETRY_DESC,
     use: "misc",
   },
   async (m, t) => {
     if (!m.reply_message)
-      return await m.sendReply("_Reply to a command message_");
+      return await m.sendReply(Lang.RETRY_NEED_REPLY);
     const { key, message } = m.quoted;
     if (key.fromMe && !m.fromMe) {
-      return await m.sendReply("_Only the owner can retry the bot's own messages_");
+      return await m.sendReply(Lang.RETRY_OWNER_ONLY);
     }
     // the quoted key carries the original sender; remoteJidAlt keeps a phone-jid DM resolvable
     const original = {
@@ -128,7 +139,7 @@ Module(
   {
     pattern: "vv ?(.*)",
     fromMe: true,
-    desc: "Anti view once",
+    desc: Lang.VV_DESC,
     use: "utility",
   },
   async (m, match) => {
@@ -136,10 +147,21 @@ Module(
       realQuoted = m.quoted;
 
     if (!m.reply_message || !quoted) {
-      return await m.sendReply("_Not a view once msg!_");
+      return await m.sendReply(Lang.NOT_VV);
     }
 
     if (match[1] && match[1].includes("@")) m.jid = match[1];
+
+    const textVV = extractViewOnce(quoted);
+    if (textVV?.isText) {
+      const text = textVV.text || (await recoverFromStore(m.quoted?.key?.id))?.text;
+      if (!text) return await reportVVFailure(m, TEXT_STUB_REASON);
+      try {
+        return await m.client.sendMessage(m.jid, { text });
+      } catch (error) {
+        return await reportVVFailure(m, String(error?.message || error));
+      }
+    }
 
     const viewOnceKey = [
       "viewOnceMessage",
@@ -184,20 +206,20 @@ Module(
       return await forward(quoted[directType]);
     }
 
-    await m.sendReply("_Not a view once msg!_");
+    await m.sendReply(Lang.NOT_VV);
   }
 );
 Module(
   {
     pattern: "delete",
     fromMe: true,
-    desc: "Deletes message for everyone",
+    desc: Lang.DELETE_DESC,
   },
   async (m, t) => {
     if (!m.reply_message) return;
     m.jid = m.quoted.key.remoteJid;
     if (!m.quoted.key.fromMe && !(await isAdmin(m))) {
-      return await m.sendReply("_I'm not an admin!_");
+      return await m.sendReply(Lang.NOT_ADMIN);
     }
     return await m.client.sendMessage(m.jid, { delete: m.quoted.key });
   }

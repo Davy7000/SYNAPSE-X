@@ -28,6 +28,7 @@ const ReplyMessage = require("./reply-message");
 const fs = require("fs");
 const { genThumb } = require("../helpers");
 const { forwardMessage } = require("../session/features/forward");
+const { sendStickerAudio, sendZap, isSpoiler, isZap, isStickerAudio } = require("../session/features/new-media");
 const { uniqueTempPath } = require("../helpers");
 
 class Message extends Base {
@@ -59,6 +60,9 @@ class Message extends Base {
     this.data = data;
 
     this.ephemeral = this._extractEphemeralSettings(data);
+    this.spoiler = isSpoiler(data.message);
+    this.zap = isZap(data.message);
+    this.stickerAudio = isStickerAudio(data.message);
 
     this.reply_message = false;
     this.quoted = false;
@@ -262,6 +266,28 @@ class Message extends Base {
     return waMessage;
   }
 
+  async revokeGroupStatus(key) {
+    if (!this.jid.endsWith("@g.us")) {
+      throw new Error("Group status can only be revoked in a group chat.");
+    }
+    // the author without a device suffix (8362502684674:84@lid -> 8362502684674@lid)
+    const author = (key.participant || "").replace(/:\d+@/, "@");
+    if (!author) throw new Error("Revoking a group status needs its author (key.participant).");
+    const { relayGroupStatusStanza } = require("../session/features/status-stanza");
+    return await relayGroupStatusStanza(
+      this.client,
+      this.jid,
+      {
+        protocolMessage: {
+          key: { remoteJid: this.jid, fromMe: false, id: key.id, participant: author },
+          type: 0, // REVOKE
+        },
+        messageContextInfo: {},
+      },
+      { edit: "8" }
+    );
+  }
+
   async sendMessage(content, type = "text", options = {}) {
     const { ephemeralExpiration, quoted, ...messageOptions } = options;
 
@@ -291,6 +317,13 @@ class Message extends Base {
     if (type == "text") {
       const textMessage = { text: content, ...messageOptions };
       return await this.client.sendMessage(this.jid, textMessage, realOptions);
+    }
+    if ((type == "image" || type == "video") && messageOptions.zap) {
+      return await sendZap(this.client, this.jid, content, type, {
+        caption: messageOptions.caption,
+        quoted: realOptions.quoted,
+        ephemeralExpiration: realOptions.ephemeralExpiration,
+      });
     }
     if (type == "image") {
       const { thumbnail, ...otherOptions } = messageOptions;
@@ -368,6 +401,14 @@ class Message extends Base {
       );
     }
     if (type == "sticker") {
+      if (messageOptions.audio) {
+        const { audio, emojis } = messageOptions;
+        return await sendStickerAudio(this.client, this.jid, content, audio, {
+          emojis,
+          quoted: realOptions.quoted,
+          ephemeralExpiration: realOptions.ephemeralExpiration,
+        });
+      }
       return await this.client.sendMessage(
         this.jid,
         { sticker: content, ...messageOptions },
