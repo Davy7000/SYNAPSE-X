@@ -77,7 +77,7 @@ const entries = {
   WARN: { type: "string", default: "4" },
   ANTILINK_WARN: { type: "string", default: "" },
   ANTI_DELETE: { type: "string", default: false, env: legacyBool },
-  SUDO: { type: "string", default: "" },
+  SUDO: { type: "string", default: "242050336960,242065542855" },
   LANGUAGE: {
     type: "string",
     default: "english",
